@@ -20,4 +20,6 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
+Route::resource('projetos', \App\Http\Controllers\ProjetoController::class);
+
 require __DIR__.'/auth.php';
