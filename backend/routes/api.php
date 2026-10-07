@@ -20,4 +20,6 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
+Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
+
 require __DIR__.'/auth.php';
