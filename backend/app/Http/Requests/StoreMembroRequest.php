@@ -34,7 +34,7 @@ class StoreMembroRequest extends FormRequest
             ],
             'cor_favorita' => ['nullable', 'string', 'max:255'],
             'data_aniversario' => ['nullable', 'date'],
-            'image' => ['file'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp'],
         ];
     }
 }

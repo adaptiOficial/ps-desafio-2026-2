@@ -36,10 +36,11 @@ class MembroController extends Controller
     {
         $validatedData = $request->validated();
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $path = $request->file('image')->store('Membro', 'public');
-            $data['image'] = url('storage/'.$path);
+            $validatedData['image'] = url('storage/' . $path);
         }
+
         $membro = $this->membro->create($validatedData);
         return response()->json($membro, Response::HTTP_CREATED);
     }
@@ -63,17 +64,17 @@ class MembroController extends Controller
     {
         $validatedData = $request->validated();
         $membro = $this->membro->findOrFail($id);
-        
-         if($request->hasFile('image')){
-            try{
-                $image_name = explode('Membro/', $membro['image']);
-                Storage::disk('public')->delete('Membro/'.$image_name[1]);
-            }catch(Throwable){
-            } finally{
-                $path = $request->file('image')->store('Membro', 'public');
-                $data['image'] = url('storage/'.$path);
+
+        if ($request->hasFile('image')) {
+            if ($membro->image) {
+                $imagePath = str_replace(url('storage/') . '/', '', $membro->image);
+                Storage::disk('public')->delete($imagePath);
             }
+
+            $path = $request->file('image')->store('Membro', 'public');
+            $validatedData['image'] = url('storage/' . $path);
         }
+
         $membro->update($validatedData);
         return response()->json($membro, Response::HTTP_OK);
     }
@@ -84,6 +85,12 @@ class MembroController extends Controller
     public function destroy(String $id): JsonResponse
     {
         $membro = $this->membro->findOrFail($id);
+
+        if ($membro->image) {
+            $imagePath = str_replace(url('storage/') . '/', '', $membro->image);
+            Storage::disk('public')->delete($imagePath);
+        }
+
         $membro->delete();
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }

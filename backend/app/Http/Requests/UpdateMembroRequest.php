@@ -34,6 +34,7 @@ class UpdateMembroRequest extends FormRequest
                     ],
             'cor_favorita' => ['sometimes', 'string', 'max:255'],
             'data_aniversario' => ['sometimes', 'date'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp'],
         ];
     }
 }
