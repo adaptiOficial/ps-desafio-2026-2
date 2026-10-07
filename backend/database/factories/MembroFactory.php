@@ -24,6 +24,7 @@ class MembroFactory extends Factory
             'senha' => static::$password ??= Hash::make('password'),
             'cor_favorita' => fake()->colorName(),
             'data_aniversario' => fake()->date(),
+            'image' => 'https://picsum.photos/seed/'.fake()->unique()->uuid().'/400/400',
         ];
     }
 }
