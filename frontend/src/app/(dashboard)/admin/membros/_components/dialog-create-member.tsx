@@ -50,7 +50,7 @@ export function DialogCreateMember({ children }: DialogCreateMemberProps) {
             &rdquo;Salvar&rdquo; para incluí-lo no sistema.
           </DialogDescription>
         </DialogHeader>
-        <form action={submit}>
+        <form action={submit} encType="multipart/form-data">
           <FormFieldsMember />
         </form>
       </DialogContent>
