@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
         $user->assignPermission('admin');
+
+        $this->call(MembroSeeder::class);
         $this->call(ProjetoSeeder::class);
     }
 }
