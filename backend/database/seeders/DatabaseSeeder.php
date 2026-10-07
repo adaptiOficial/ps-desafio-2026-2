@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $user->assignPermission('admin');
 
         $this->call(MembroSeeder::class);
+        $this->call(ProjetoSeeder::class);
     }
 }
