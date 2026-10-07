@@ -54,3 +54,5 @@ Dentro da pasta `frontend` siga as seguintes instruções.
     pnpm dev
     ```
     1. O servidor **frontend** será iniciado por padrão no endereço `http://127.0.0.1:3000`. 
+
+    qualquer coisa lalalala
