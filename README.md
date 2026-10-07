@@ -58,3 +58,5 @@ Dentro da pasta `frontend` siga as seguintes instruções.
 
 
     Alterando algo do projeto e talssssss
+
+    TEESTANDODOODODODO
