@@ -6,7 +6,9 @@ use App\Models\Membro;
 use App\Http\Requests\StoreMembroRequest;
 use App\Http\Requests\UpdateMembroRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class MembroController extends Controller
 {
@@ -33,6 +35,11 @@ class MembroController extends Controller
     public function store(StoreMembroRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+
+        if($request->hasFile('image')){
+            $path = $request->file('image')->store('Membro', 'public');
+            $data['image'] = url('storage/'.$path);
+        }
         $membro = $this->membro->create($validatedData);
         return response()->json($membro, Response::HTTP_CREATED);
     }
@@ -56,6 +63,17 @@ class MembroController extends Controller
     {
         $validatedData = $request->validated();
         $membro = $this->membro->findOrFail($id);
+        
+         if($request->hasFile('image')){
+            try{
+                $image_name = explode('Membro/', $membro['image']);
+                Storage::disk('public')->delete('Membro/'.$image_name[1]);
+            }catch(Throwable){
+            } finally{
+                $path = $request->file('image')->store('Membro', 'public');
+                $data['image'] = url('storage/'.$path);
+            }
+        }
         $membro->update($validatedData);
         return response()->json($membro, Response::HTTP_OK);
     }
