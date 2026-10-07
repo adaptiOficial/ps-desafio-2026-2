@@ -18,12 +18,12 @@ import {
   ButtonFilter,
 } from '@/components/dashboard/filter'
 
-interface FilterUsersProps {
+interface FilterMembersProps {
   name?: string
   email?: string
 }
 
-export function FilterUsers({ name, email }: FilterUsersProps) {
+export function FilterMembers({ name, email }: FilterMembersProps) {
   const formRef = useRef<HTMLFormElement>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -49,13 +49,13 @@ export function FilterUsers({ name, email }: FilterUsersProps) {
         >
           <Input
             name="name"
-            placeholder="Nome do usuário"
+            placeholder="Nome do membro"
             size="sm"
             defaultValue={name}
           />
           <Input
             name="email"
-            placeholder="E-mail do usuário"
+            placeholder="E-mail do membro"
             size="sm"
             defaultValue={email}
           />

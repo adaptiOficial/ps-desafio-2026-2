@@ -1,23 +1,23 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { FilterUsers } from '@/app/(dashboard)/admin/usuarios/_components/filter-users'
+import { FilterMembers } from '@/app/(dashboard)/admin/membros/_components/filter-members'
 import { Popover, PopoverTrigger, PopoverContent } from './dashboard/popover'
 import { LuFilter, LuSearch, LuX } from 'react-icons/lu'
 import { Button } from './button'
 import { ButtonFilter, FormFilter } from './dashboard/filter'
 import { Input } from './input'
 
-const meta: Meta<typeof FilterUsers> = {
-  title: 'Components/FilterUsers',
-  component: FilterUsers,
+const meta: Meta<typeof FilterMembers> = {
+  title: 'Components/FilterMembers',
+  component: FilterMembers,
   argTypes: {
     name: {
       control: 'text',
-      description: 'Busca usuários cujo nome contenha os caracteres digitados.',
+      description: 'Busca membros cujo nome contenha os caracteres digitados.',
     },
     email: {
       control: 'text',
       description:
-        'Busca usuários cujo e-mail contenha os caracteres digitados.',
+        'Busca membros cujo e-mail contenha os caracteres digitados.',
     },
   },
   parameters: {
@@ -25,22 +25,22 @@ const meta: Meta<typeof FilterUsers> = {
       description: {
         // descrição do componente.
         component:
-          'O componente de filtro de usuários permite ao usuário realizar buscas dinâmicas com base no nome e/ou e-mail dos usuários cadastrados no sistema. Ele é composto por dois campos de entrada, onde é possível digitar partes ou o valor completo do nome e e-mail para refinar a lista exibida.<br/><br/>O componente de filtro possui três funções, as quais são: "applyFilter", "clearFilter" e "checkFilters". A primeira delas aplica os filtros definidos em um formulário, atualizando a URL com os novos parâmetros de busca. Já a segunda, remove todos os filtros que foram definidos via formulário e reseta o formulário. Por fim, a última verifica se algum dos campos especificados em fields está presente nos parâmetros da URL.',
+          'O componente de filtro de membros permite ao usuário realizar buscas dinâmicas com base no nome e/ou e-mail dos membros cadastrados no sistema. Ele é composto por dois campos de entrada, onde é possível digitar partes ou o valor completo do nome e e-mail para refinar a lista exibida.<br/><br/>O componente de filtro possui três funções, as quais são: "applyFilter", "clearFilter" e "checkFilters". A primeira delas aplica os filtros definidos em um formulário, atualizando a URL com os novos parâmetros de busca. Já a segunda, remove todos os filtros que foram definidos via formulário e reseta o formulário. Por fim, a última verifica se algum dos campos especificados em fields está presente nos parâmetros da URL.',
       },
     },
   },
   args: { name: '', email: '' },
-} satisfies Meta<typeof FilterUsers>
+} satisfies Meta<typeof FilterMembers>
 
 export default meta
 
-type Story = StoryObj<typeof FilterUsers>
+type Story = StoryObj<typeof FilterMembers>
 
 export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'O formato padrão do filtro de usuários.',
+        story: 'O formato padrão do filtro de membros.',
       },
     },
   },
@@ -55,13 +55,13 @@ export const Default: Story = {
         <FormFilter>
           <Input
             name="name"
-            placeholder="Nome do usuário"
+            placeholder="Nome do membro"
             size="sm"
             defaultValue={args.name}
           />
           <Input
             name="email"
-            placeholder="E-mail do usuário"
+            placeholder="E-mail do membro"
             size="sm"
             defaultValue={args.email}
           />

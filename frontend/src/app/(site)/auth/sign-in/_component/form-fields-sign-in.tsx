@@ -20,9 +20,9 @@ export function FormFieldsSignIn({ error }: FormFieldsSignIn) {
           type="email"
           name="email"
           placeholder="Insira seu e-mail"
-          defaultValue="test@example.com"
           disabled={pending}
           required
+          maxLength={255}
         />
       </div>
       <div>
@@ -33,9 +33,9 @@ export function FormFieldsSignIn({ error }: FormFieldsSignIn) {
           type="password"
           name="password"
           placeholder="Insira sua senha"
-          defaultValue="password"
           disabled={pending}
           required
+          minLength={8}
         />
       </div>
       <p className="text-sm text-destructive" hidden={!error}>

@@ -8,41 +8,32 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/dialog'
-import FormFieldsUser from './form-fields-user'
-import { createUser } from '@/actions/user'
+import FormFieldsMember from './form-fields-member'
+import { createMember } from '@/actions/member'
 import { filterFormData } from '@/services/filter-form-data'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useToast } from '@/components/use-toast'
-import { ResponseErrorType } from '@/services/api'
 
-interface DialogCreateUserProps {
+interface DialogCreateMemberProps {
   children: React.ReactNode
 }
 
-export function DialogCreateUser({ children }: DialogCreateUserProps) {
+export function DialogCreateMember({ children }: DialogCreateMemberProps) {
   const [open, setOpen] = useState<boolean>()
-  const [error, setError] = useState<ResponseErrorType | null>(null)
   const { toast } = useToast()
-
-  useEffect(() => {
-    if (!open) {
-      setError(null)
-    }
-  }, [open])
 
   const submit = async (form: FormData) => {
     const newForm = await filterFormData(form)
 
-    const { error } = await JSON.parse(await createUser(newForm))
+    const { error } = await JSON.parse(await createMember(newForm))
 
     if (error) {
-      setError(error)
       toast({
-        title: 'Não foi possível criar o usuário!',
+        title: 'Não foi possível criar o membro!',
       })
     } else {
       toast({
-        title: 'Usuário criado com sucesso!',
+        title: 'Membro criado com sucesso!',
       })
       setOpen(false)
     }
@@ -53,14 +44,14 @@ export function DialogCreateUser({ children }: DialogCreateUserProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Adicionar usuário</DialogTitle>
+          <DialogTitle>Adicionar membro</DialogTitle>
           <DialogDescription>
-            Preencha as informações do novo usuário abaixo e clique em
+            Preencha as informações do novo membro abaixo e clique em
             &rdquo;Salvar&rdquo; para incluí-lo no sistema.
           </DialogDescription>
         </DialogHeader>
         <form action={submit}>
-          <FormFieldsUser error={error} />
+          <FormFieldsMember />
         </form>
       </DialogContent>
     </Dialog>

@@ -8,21 +8,21 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/dialog";
-import FormFieldsUser from "./form-fields-user";
-import { userType } from "@/types/user";
-import SkeletonFormFieldsUser from "./skeleton-users";
+import FormFieldsMember from "./form-fields-member";
+import { membroType } from "@/types/member";
+import SkeletonFormFieldsMember from "./skeleton-members";
 import { useState } from "react";
 
-interface DialogInformationUserProps {
-  user: userType;
+interface DialogInformationMemberProps {
+  member: membroType;
   children: React.ReactNode;
   isInformation?: boolean;
 }
 
-export function DialogInformationUser({
-  user,
+export function DialogInformationMember({
+  member,
   children,
-}: DialogInformationUserProps) {
+}: DialogInformationMemberProps) {
   const [open, setOpen] = useState<boolean>();
 
   return (
@@ -30,15 +30,15 @@ export function DialogInformationUser({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Informações do usuário</DialogTitle>
+          <DialogTitle>Informações do membro</DialogTitle>
           <DialogDescription>
-            Visualize as informações detalhadas do usuário abaixo.
+            Visualize as informações detalhadas do membro abaixo.
           </DialogDescription>
         </DialogHeader>
-        {user ? (
-          <FormFieldsUser user={user} readOnly />
+        {member ? (
+          <FormFieldsMember member={member} readOnly />
         ) : (
-          <SkeletonFormFieldsUser readOnly />
+          <SkeletonFormFieldsMember readOnly />
         )}
       </DialogContent>
     </Dialog>

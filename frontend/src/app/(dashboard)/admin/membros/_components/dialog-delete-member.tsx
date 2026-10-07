@@ -1,6 +1,6 @@
 'use client'
 
-import { destroyUser } from '@/actions/user'
+import { destroyMember } from '@/actions/member'
 import { Button } from '@/components/button'
 import {
   Dialog,
@@ -14,25 +14,25 @@ import {
 import { useToast } from '@/components/use-toast'
 import { useState } from 'react'
 
-interface DialogCreateUserProps {
+interface DialogDeleteMemberProps {
   id: string
   children: React.ReactNode
 }
 
-export function DialogUserDelete({ id, children }: DialogCreateUserProps) {
+export function DialogMemberDelete({ id, children }: DialogDeleteMemberProps) {
   const [open, setOpen] = useState<boolean>()
   const { toast } = useToast()
 
   const submit = async () => {
-    const { error } = await JSON.parse(await destroyUser(id))
+    const { error } = await JSON.parse(await destroyMember(id))
 
     if (error) {
       toast({
-        title: 'Não foi possível excluir o usuário!',
+        title: 'Não foi possível excluir o membro!',
       })
     } else {
       toast({
-        title: 'Usuário deletado com sucesso!',
+        title: 'Membro excluído com sucesso!',
       })
     }
 
@@ -44,10 +44,10 @@ export function DialogUserDelete({ id, children }: DialogCreateUserProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Confirmar exclusão de usuário</DialogTitle>
+          <DialogTitle>Confirmar exclusão de membro</DialogTitle>
           <DialogDescription>
-            Tem certeza de que deseja excluir este usuário? Esta ação é
-            irreversível e removerá permanentemente o usuário do sistema. Deseja
+            Tem certeza de que deseja excluir este membro? Esta ação é
+            irreversível e removerá permanentemente o membro do sistema. Deseja
             continuar com a exclusão?
           </DialogDescription>
         </DialogHeader>

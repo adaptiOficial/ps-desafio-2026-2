@@ -8,38 +8,35 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/dialog";
-import FormFieldsUser from "./form-fields-user";
-import { updateUser } from "@/actions/user";
+import FormFieldsMember from "./form-fields-member";
+import { updateMember } from "@/actions/member";
 import { filterFormData } from "@/services/filter-form-data";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/use-toast";
-import { userType } from "@/types/user";
-import { ResponseErrorType, api } from "@/services/api";
-import SkeletonFormFieldsUser from "./skeleton-users";
+import { membroType } from "@/types/member";
+import SkeletonFormFieldsMember from "./skeleton-members";
 
-interface DialogUpdateUserProps {
-  user: userType;
+interface DialogUpdateMemberProps {
+  member: membroType;
   children: React.ReactNode;
 }
 
-export function DialogUpdateUser({ user, children }: DialogUpdateUserProps) {
+export function DialogUpdateMember({ member, children }: DialogUpdateMemberProps) {
   const [open, setOpen] = useState<boolean>();
-  const [error, setError] = useState<ResponseErrorType | null>(null);
   const { toast } = useToast();
 
   const submit = async (form: FormData) => {
     const newForm = await filterFormData(form);
 
-    const { error } = await JSON.parse(await updateUser(newForm));
+    const { error } = await JSON.parse(await updateMember(newForm));
 
     if (error) {
-      setError(error);
       toast({
-        title: "Não foi possível editar o usuário!",
+        title: "Não foi possível editar o membro!",
       });
     } else {
       toast({
-        title: "Usuário editado com sucesso!",
+        title: "Membro editado com sucesso!",
       });
       setOpen(false);
     }
@@ -50,17 +47,17 @@ export function DialogUpdateUser({ user, children }: DialogUpdateUserProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar usuário</DialogTitle>
+          <DialogTitle>Editar membro</DialogTitle>
           <DialogDescription>
-            Atualize as informações do usuário abaixo e clique em
+            Atualize as informações do membro abaixo e clique em
             &quot;Salvar&quot; para aplicar as alterações.
           </DialogDescription>
         </DialogHeader>
         <form action={submit}>
-          {user ? (
-            <FormFieldsUser error={error} user={user} />
+          {member ? (
+            <FormFieldsMember member={member} />
           ) : (
-            <SkeletonFormFieldsUser />
+            <SkeletonFormFieldsMember />
           )}
         </form>
       </DialogContent>
