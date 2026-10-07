@@ -14,7 +14,7 @@ class Projeto extends Model
         'nome',
         'nome_cliente',
         'descricao',
-        'dara_inicio',
+        'data_inicio',
         'data_fim',
     ];
 }
