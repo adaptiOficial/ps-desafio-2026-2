@@ -15,6 +15,7 @@ class Membro extends Model
         'email',
         'cor_favorita',
         'data_aniversario',
+        'image',
     ];
 
     protected $hidden = [

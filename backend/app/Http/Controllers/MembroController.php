@@ -6,7 +6,9 @@ use App\Models\Membro;
 use App\Http\Requests\StoreMembroRequest;
 use App\Http\Requests\UpdateMembroRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class MembroController extends Controller
 {
@@ -33,6 +35,12 @@ class MembroController extends Controller
     public function store(StoreMembroRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('Membro', 'public');
+            $validatedData['image'] = url('storage/' . $path);
+        }
+
         $membro = $this->membro->create($validatedData);
         return response()->json($membro, Response::HTTP_CREATED);
     }
@@ -56,6 +64,17 @@ class MembroController extends Controller
     {
         $validatedData = $request->validated();
         $membro = $this->membro->findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            if ($membro->image) {
+                $imagePath = str_replace(url('storage/') . '/', '', $membro->image);
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            $path = $request->file('image')->store('Membro', 'public');
+            $validatedData['image'] = url('storage/' . $path);
+        }
+
         $membro->update($validatedData);
         return response()->json($membro, Response::HTTP_OK);
     }
@@ -66,6 +85,12 @@ class MembroController extends Controller
     public function destroy(String $id): JsonResponse
     {
         $membro = $this->membro->findOrFail($id);
+
+        if ($membro->image) {
+            $imagePath = str_replace(url('storage/') . '/', '', $membro->image);
+            Storage::disk('public')->delete($imagePath);
+        }
+
         $membro->delete();
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }

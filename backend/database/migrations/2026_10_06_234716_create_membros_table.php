@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('senha');
             $table->string('cor_favorita');
             $table->date('data_aniversario');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
