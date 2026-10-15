@@ -21,6 +21,5 @@ Route::get('/', function () {
 });
 
 Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
-Route::resource('projetos', \App\Http\Controllers\ProjetoController::class);
-
+Route::apiResource('projetos', \App\Http\Controllers\ProjetoController::class);
 require __DIR__.'/auth.php';
