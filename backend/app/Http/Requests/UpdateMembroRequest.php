@@ -12,7 +12,7 @@ class UpdateMembroRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class UpdateMembroRequest extends FormRequest
     {
         return [
             'nome' => ['sometimes'],
-            'email' => ['sometimes', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:membros,email,' . $this->route('membro')],
             'senha' => ['sometimes', 'string', 'max:255',
                     Password::min(8)
                     ->letters()

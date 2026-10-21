@@ -22,5 +22,7 @@ Route::get('/', function () {
 
 Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
 Route::resource('projetos', \App\Http\Controllers\ProjetoController::class);
+Route::apiResource('tarefas', \App\Http\Controllers\TarefaController::class)
+    ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
 
 require __DIR__.'/auth.php';
