@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Projeto extends Model
 {
@@ -16,5 +18,16 @@ class Projeto extends Model
         'descricao',
         'data_inicio',
         'data_fim',
+        'status',
     ];
+
+    public function tarefas(): HasMany
+    {
+        return $this->hasMany(Tarefa::class);
+    }
+
+    public function membros(): BelongsToMany
+    {
+        return $this->belongsToMany(Membro::class, 'projeto_membro')->withTimestamps();
+    }
 }
