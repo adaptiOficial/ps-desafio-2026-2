@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Controllers\ProjetoMembroController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', function (Request $request) {
@@ -22,4 +23,6 @@ Route::get('/', function () {
 
 Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
 Route::apiResource('projetos', \App\Http\Controllers\ProjetoController::class);
+Route::post('projetos/{projeto}/membros', [ProjetoMembroController::class, 'store']);
+
 require __DIR__.'/auth.php';
