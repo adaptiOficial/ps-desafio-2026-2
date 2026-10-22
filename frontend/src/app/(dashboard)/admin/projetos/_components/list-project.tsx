@@ -44,7 +44,7 @@ export default async function ListProjects() {
         </DialogCreateProjeto>
       </DashboardContainer>
       <DashboardContainer>
-        <Table>
+        <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
@@ -65,7 +65,8 @@ export default async function ListProjects() {
                 <TableCell>
                   {formatarData(projeto.data_fim)}
                 </TableCell>
-                <TableCell className="flex justify-end gap-2">
+                <TableCell className="whitespace-nowrap">
+                  <div className="flex justify-end gap-2">
                   <DialogInformationProjeto projeto={projeto}>
                     <Button variant="default-inverse" size="icon">
                       <LuInfo />
@@ -81,6 +82,7 @@ export default async function ListProjects() {
                       <LuTrash />
                     </Button>
                   </DialogProjetoDelete>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
