@@ -20,8 +20,12 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
-Route::resource('projetos', \App\Http\Controllers\ProjetoController::class);
+Route::apiResource('membros', \App\Http\Controllers\MembroController::class)
+    ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
+
+Route::resource('projetos', \App\Http\Controllers\ProjetoController::class)
+    ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
+
 Route::apiResource('tarefas', \App\Http\Controllers\TarefaController::class)
     ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
 

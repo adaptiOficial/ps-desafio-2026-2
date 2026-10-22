@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Tarefa;
+
 use App\Models\Membro;
 use App\Http\Requests\StoreMembroRequest;
 use App\Http\Requests\UpdateMembroRequest;
@@ -22,10 +25,16 @@ class MembroController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    
+    public function index()
     {
-        $membros = $this->membro->all();
-        return response()->json($membros, Response::HTTP_OK);
+        $membros = Membro::all()->map(function ($membro) {            
+            $membro->tarefas_count = \App\Models\Tarefa::where('membro_id', (string) $membro->id)->count();
+                
+            return $membro;
+        });
+
+        return response()->json($membros);
     }
 
    
@@ -35,6 +44,10 @@ class MembroController extends Controller
     public function store(StoreMembroRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        
+        if (isset($validatedData['senha'])) {
+            $validatedData['senha'] = bcrypt($validatedData['senha']);
+        }
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('Membro', 'public');
@@ -42,6 +55,7 @@ class MembroController extends Controller
         }
 
         $membro = $this->membro->create($validatedData);
+        
         return response()->json($membro, Response::HTTP_CREATED);
     }
 
@@ -60,23 +74,19 @@ class MembroController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMembroRequest $request, String $id): JsonResponse
+    public function update(Request $request, string $id)
     {
-        $validatedData = $request->validated();
-        $membro = $this->membro->findOrFail($id);
-
-        if ($request->hasFile('image')) {
-            if ($membro->image) {
-                $imagePath = str_replace(url('storage/') . '/', '', $membro->image);
-                Storage::disk('public')->delete($imagePath);
-            }
-
-            $path = $request->file('image')->store('Membro', 'public');
-            $validatedData['image'] = url('storage/' . $path);
+        $membro = Membro::findOrFail($id);
+        
+        if ($request->has('membro_destino_id') && !empty($request->membro_destino_id)) {
+            Tarefa::where('membro_id', $membro->id)
+                ->where('status', 'pendente')
+                ->update(['membro_id' => $request->membro_destino_id]);
         }
+        
+        $membro->update($request->all());
 
-        $membro->update($validatedData);
-        return response()->json($membro, Response::HTTP_OK);
+        return response()->json(['message' => 'Membro atualizado e tarefas migradas (se aplicável).']);
     }
 
     /**

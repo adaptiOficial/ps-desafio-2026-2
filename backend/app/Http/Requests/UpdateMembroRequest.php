@@ -23,18 +23,18 @@ class UpdateMembroRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['sometimes'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:membros,email,' . $this->route('membro')],
+            'nome' => ['sometimes'],            
+            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', 'unique:membros,email,' . $this->route('membro')],
             'senha' => ['sometimes', 'string', 'max:255',
-                    Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ],
+                    Password::min(8)->letters()->mixedCase()->numbers()->symbols()
+            ],
             'cor_favorita' => ['sometimes', 'string', 'max:255'],
             'data_aniversario' => ['sometimes', 'date'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp'],
+            
+            'status' => ['sometimes', 'string'],
+            'justificativa_desligamento' => ['nullable', 'string'],
+            'justificativa_exclusao' => ['nullable', 'string'],
         ];
     }
 }

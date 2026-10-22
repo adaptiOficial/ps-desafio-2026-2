@@ -31,20 +31,35 @@ class StoreTarefaRequest extends FormRequest
                 'uuid',
                 'exists:membros,id',                
                 function ($attribute, $value, $fail) {
+                    
+                    // Limite de tarefas ativas por membro (ignora concluidas e excluidas)
+                    $limiteTarefas = 5;
+                    $totalTarefasAtivas = DB::table('tarefas')
+                        ->where('membro_id', $value)
+                        ->whereNotIn('status', ['concluida', 'excluida'])
+                        ->count();
+
+                    if ($totalTarefasAtivas >= $limiteTarefas) {
+                        $fail("Sobrecarga: Este membro já atingiu o limite máximo de {$limiteTarefas} tarefas ativas.");
+                        return;
+                    }
+
+                    // Trava de 2 projetos ativos (desconsidera tarefas excluidas)
                     $projetoIdRequisicao = $this->projeto_id;
 
                     if (!$projetoIdRequisicao) {
                         return;
                     }
-                    
+
                     $projetosAtivosIds = DB::table('tarefas')
                         ->join('projetos', 'tarefas.projeto_id', '=', 'projetos.id')
                         ->where('tarefas.membro_id', $value)
-                        ->where('projetos.data_fim', '>=', now()->toDateString()) // O projeto ainda não terminou
+                        ->where('tarefas.status', '!=', 'excluida') // Ignora tarefas na lixeira
+                        ->where('projetos.data_fim', '>=', now()->toDateString())
                         ->pluck('tarefas.projeto_id')
-                        ->unique() // Remove projetos duplicados para sabermos em quantos projetos distintos ele está
+                        ->unique()
                         ->toArray();
-                    
+
                     if (count($projetosAtivosIds) >= 2 && !in_array($projetoIdRequisicao, $projetosAtivosIds)) {
                         $fail('Este membro já está alocado no limite máximo de 2 projetos ativos em simultâneo.');
                     }

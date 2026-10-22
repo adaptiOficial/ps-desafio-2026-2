@@ -10,6 +10,8 @@ export async function createMember(form: FormData) {
     revalidatePath('/admin/membros')
   }
 
+  revalidatePath('/admin/membros');
+
   return JSON.stringify(res)
 }
 

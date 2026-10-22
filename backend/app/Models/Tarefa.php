@@ -16,14 +16,12 @@ class Tarefa extends Model
         'status',
         'projeto_id',
         'membro_id',
+        'justificativa_exclusao',
     ];
 
-    /**
-     * Relacionamento: Uma tarefa pertence a um projeto
-     */
-    public function projeto(): BelongsTo
+    public function projeto()
     {
-        return $this->belongsTo(Projeto::class);
+        return $this->belongsTo(\App\Models\Projeto::class, 'projeto_id', 'id');
     }
 
     /**

@@ -55,7 +55,8 @@ class TarefaController extends Controller
         $validated = $request->validate([
             'titulo' => 'sometimes|required|string|max:255',
             'descricao' => 'nullable|string',
-            'status' => 'sometimes|required|string'
+            'status' => 'sometimes|required|string',
+            'justificativa_exclusao' => 'nullable|string'
         ]);
 
         $tarefa->update($validated);

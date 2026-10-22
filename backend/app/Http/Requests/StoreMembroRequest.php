@@ -23,19 +23,15 @@ class StoreMembroRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required'],
-            'email' => ['required', 'string', 'max:255', 'unique:membros,email'],
+            'nome' => ['required', 'string', 'max:255'],            
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:membros,email'],
             'senha' => [
                 'required',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
+                Password::min(8)->letters()->mixedCase()->numbers()->symbols(),
             ],
             'cor_favorita' => ['nullable', 'string', 'max:255'],
             'data_aniversario' => ['nullable', 'date'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
     }
 

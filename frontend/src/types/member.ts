@@ -6,6 +6,9 @@ export type membroType = {
   cor_favorita?: string
   data_aniversario?: string
   image?: string
+  status?: string
+  justificativa_desligamento?: string
+  justificativa_exclusao?: string
   created_at?: Date
   updated_at?: Date
 }
