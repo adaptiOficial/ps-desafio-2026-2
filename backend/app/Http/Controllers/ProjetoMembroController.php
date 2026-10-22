@@ -48,4 +48,24 @@ class ProjetoMembroController extends Controller
             Response::HTTP_CREATED
         );
     }
+
+    public function destroy(string $projetoId, string $membroId): JsonResponse
+{
+    $projeto = Projeto::findOrFail($projetoId);
+    $membro = Membro::findOrFail($membroId);
+
+    if (! $projeto->membros()->where('membros.id', $membro->id)->exists()) {
+        return response()->json(
+            ['message' => "{$membro->nome} não está alocado neste projeto."],
+            Response::HTTP_NOT_FOUND
+        );
+    }
+
+    $projeto->membros()->detach($membro->id);
+
+    return response()->json(
+        ['message' => "{$membro->nome} removido do projeto com sucesso."],
+        Response::HTTP_OK
+    );
+}
 }

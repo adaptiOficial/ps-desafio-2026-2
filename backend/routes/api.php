@@ -25,6 +25,7 @@ Route::get('/', function () {
 Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
 Route::apiResource('projetos', \App\Http\Controllers\ProjetoController::class);
 Route::post('projetos/{projeto}/membros', [ProjetoMembroController::class, 'store']);
+Route::delete('projetos/{projetoId}/membros/{membroId}',[ProjetoMembroController::class, 'destroy']);
 Route::apiResource('tarefas', TarefaController::class);
 
 require __DIR__.'/auth.php';

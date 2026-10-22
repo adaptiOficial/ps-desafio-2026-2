@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProjetoRequest;
 use App\Http\Requests\UpdateProjetoRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class ProjetoController extends Controller
 {
@@ -21,7 +22,7 @@ class ProjetoController extends Controller
      */
     public function index(): JsonResponse
     {
-        $projetos = Projeto::all();
+        $projetos = Projeto::with('membros')->get();
         return response()->json($projetos, Response::HTTP_OK);
     }
 
@@ -47,11 +48,27 @@ class ProjetoController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateProjetoRequest $request, String $id): JsonResponse
-    {
-        $projeto = Projeto::findOrFail($id);
-        $projeto->update($request->validated());
-        return response()->json($projeto, Response::HTTP_OK);
+{
+    $projeto = Projeto::findOrFail($id);
+    $dados = $request->validated();
+
+    if (($dados['status'] ?? null) === 'ativo'&& $projeto->status !== 'ativo') {
+        $membros = $projeto->membros;
+
+        foreach ($membros as $membro) {
+            $ativos = $membro->projetos()->where('projetos.status', 'ativo')->count();
+
+            if ($ativos >= 2) {
+                return response()->json(['message' => "{$membro->nome} já está alocado em 2 projetos ativos. Não é possível reativar este projeto."],
+        Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
     }
+
+    $projeto->update($dados);
+
+    return response()->json($projeto, Response::HTTP_OK);
+}
 
     /**
      * Remove the specified resource from storage.

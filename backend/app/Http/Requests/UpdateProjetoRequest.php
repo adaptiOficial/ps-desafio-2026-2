@@ -31,6 +31,7 @@ class UpdateProjetoRequest extends FormRequest
             'descricao'=>['sometimes','string'],
             'data_inicio'=>['sometimes','date'],
             'data_fim'=>['sometimes','date','after_or_equal:'.$inicio],
+            'status'=>['sometimes','in:ativo,concluido,paralisado'],
         ];
     }
     
