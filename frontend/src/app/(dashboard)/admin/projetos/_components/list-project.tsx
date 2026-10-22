@@ -17,6 +17,11 @@ import { DialogProjetoDelete } from './dialog-delete-project'
 import { DialogInformationProjeto } from './dialog-information-project'
 import { DialogCreateProjeto } from './dialog-create-project'
 
+function formatarData(data: string) {
+  const [ano, mes, dia] = data.slice(0, 10).split('-')
+  return `${dia}/${mes}/${ano}`
+}
+
 export default async function ListProjects() {
   const { response } = await api<projetoType[]>('GET', '/projetos')
 
@@ -55,10 +60,10 @@ export default async function ListProjects() {
                 <TableCell>{projeto.nome}</TableCell>
                 <TableCell>{projeto.nome_cliente}</TableCell>
                 <TableCell>
-                  {new Date(projeto.data_inicio).toLocaleDateString('pt-BR')}
+                  {formatarData(projeto.data_inicio)}
                 </TableCell>
                 <TableCell>
-                  {new Date(projeto.data_fim).toLocaleDateString('pt-BR')}
+                  {formatarData(projeto.data_fim)}
                 </TableCell>
                 <TableCell className="flex justify-end gap-2">
                   <DialogInformationProjeto projeto={projeto}>
