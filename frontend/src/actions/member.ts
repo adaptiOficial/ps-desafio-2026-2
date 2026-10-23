@@ -27,12 +27,14 @@ export async function updateMember(form: FormData) {
   return JSON.stringify(res)
 }
 
-export async function destroyMember(id: string) {
-  const res = await api('DELETE', `/membros/${id}`)
+export async function destroyMember(id: string, novo_membro_id?: string) {
+  
+  const payload = novo_membro_id ? { data: { novo_membro_id } } : undefined;
+  const res = await api('DELETE', `/membros/${id}`, payload);
 
   if (!res.error) {
-    revalidatePath('/admin/membros')
+    revalidatePath('/admin/membros');
   }
 
-  return JSON.stringify(res)
+  return JSON.stringify(res);
 }

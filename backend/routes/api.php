@@ -23,6 +23,12 @@ Route::get('/', function () {
 Route::apiResource('membros', \App\Http\Controllers\MembroController::class)
     ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
 
+Route::patch('projetos/{id}/status', [\App\Http\Controllers\ProjetoController::class, 'updateStatus'])
+    ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
+
+Route::post('projetos/{id}/restore', [\App\Http\Controllers\ProjetoController::class, 'restore'])
+    ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
+
 Route::resource('projetos', \App\Http\Controllers\ProjetoController::class)
     ->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
 

@@ -51,7 +51,7 @@ export default function ListMembers() {
       }
       
       const memberAtivo = membros.find(m => m.id === id);
-      const temTarefas = memberAtivo?.tarefas_count > 0; // tarefas_count vem do Laravel!
+      const temTarefas = memberAtivo?.tarefas_count > 0;
 
       if (temTarefas && !membroDestinoId) {
         setErroMsg("Este membro possui tarefas. Selecione um membro substituto.");
@@ -138,12 +138,7 @@ export default function ListMembers() {
               membrosAtivos.length > 0 ? membrosAtivos.map((member: any) => (
                 <React.Fragment key={member.id}>
                   <TableRow>
-                    <TableCell>
-                      {member.nome} 
-                      <span className="text-red-500 font-bold ml-2">
-                        (Tarefas: {member.tarefas_count ?? 'Não chegou do Laravel'})
-                      </span>
-                    </TableCell>
+                    <TableCell>{member.nome}</TableCell>
                     <TableCell>{member.email}</TableCell>
                     <TableCell>{member.cor_favorita || '-'}</TableCell>
                     <TableCell>{member.data_aniversario ? new Date(member.data_aniversario).toLocaleDateString('pt-BR') : '-'}</TableCell>

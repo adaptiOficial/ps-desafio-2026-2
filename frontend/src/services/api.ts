@@ -77,7 +77,7 @@ baseApi.interceptors.response.use(
 )
 
 export async function api<T = unknown>(
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   url: string,
   config?: AxiosRequestConfig,
 ): Promise<

@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projetos', function (Blueprint $table) {
-            $table->string('status')->default('ativo');
-            $table->text('justificativa_exclusao')->nullable();
+            if (!Schema::hasColumn('projetos', 'status')) {
+                $table->enum('status', ['ativo', 'concluido'])->default('ativo')->after('descricao');
+            }
+            if (!Schema::hasColumn('projetos', 'justificativa_exclusao')) {
+                $table->text('justificativa_exclusao')->nullable()->after('status');
+            }
+            if (!Schema::hasColumn('projetos', 'deleted_at')) {
+                $table->softDeletes();
+            }
         });
     }
 
@@ -23,7 +30,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('projetos', function (Blueprint $table) {
-            //
+            $table->dropColumn(['status', 'justificativa_exclusao']);
+            $table->dropSoftDeletes();
         });
     }
 };
