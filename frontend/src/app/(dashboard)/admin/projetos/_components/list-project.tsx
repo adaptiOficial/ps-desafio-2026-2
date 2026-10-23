@@ -11,11 +11,13 @@ import {
 } from '@/components/dashboard/table'
 import { api } from '@/services/api'
 import { projetoType } from '@/types/projeto'
-import { LuInfo, LuPen, LuCirclePlus, LuTrash } from 'react-icons/lu'
+import { LuInfo, LuPen, LuCirclePlus, LuTrash, LuUserPlus } from 'react-icons/lu'
 import { DialogUpdateProjeto } from './dialog-update-project'
 import { DialogProjetoDelete } from './dialog-delete-project'
 import { DialogInformationProjeto } from './dialog-information-project'
 import { DialogCreateProjeto } from './dialog-create-project'
+import { DialogAlocarMembro } from './dialog-alocar-membro'
+import { membroType } from '@/types/member'
 
 function formatarData(data: string) {
   const [ano, mes, dia] = data.slice(0, 10).split('-')
@@ -24,7 +26,7 @@ function formatarData(data: string) {
 
 export default async function ListProjects() {
   const { response } = await api<projetoType[]>('GET', '/projetos')
-
+  const { response: membros } = await api<membroType[]>('GET', '/membros')
   if (!response) {
     return (
       <DashboardContainer className="text-destructive">
@@ -67,6 +69,14 @@ export default async function ListProjects() {
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <div className="flex justify-end gap-2">
+                    <DialogAlocarMembro
+                      projetoId={projeto.id}
+                      membros={membros ?? []}
+                    >
+                      <Button variant="default-inverse" size="icon">
+                        <LuUserPlus />
+                      </Button>
+                    </DialogAlocarMembro>
                   <DialogInformationProjeto projeto={projeto}>
                     <Button variant="default-inverse" size="icon">
                       <LuInfo />
