@@ -17,6 +17,11 @@ import { DialogMemberDelete } from './dialog-delete-member'
 import { DialogInformationMember } from './dialog-information-member'
 import { DialogCreateMember } from './dialog-create-member'
 
+function formatarData(data: string) {
+  const [ano, mes, dia] = data.slice(0, 10).split('-')
+  return `${dia}/${mes}/${ano}`
+}
+
 export default async function ListMembers() {
   const { response } = await api<membroType[]>('GET', '/membros')
 
@@ -57,7 +62,7 @@ export default async function ListMembers() {
                 <TableCell>{member.cor_favorita || '-'}</TableCell>
                 <TableCell>
                   {member.data_aniversario
-                    ? new Date(member.data_aniversario).toLocaleDateString('pt-BR')
+                    ? formatarData(member.data_aniversario)
                     : '-'}
                 </TableCell>
                 <TableCell className="flex justify-end gap-2">
