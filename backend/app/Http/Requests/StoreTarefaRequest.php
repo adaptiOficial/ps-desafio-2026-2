@@ -44,18 +44,27 @@ class StoreTarefaRequest extends FormRequest
                         return;
                     }
 
-                    // Trava de 2 projetos ativos (desconsidera tarefas excluidas)
+                    
                     $projetoIdRequisicao = $this->projeto_id;
 
                     if (!$projetoIdRequisicao) {
                         return;
                     }
+                    
+                    $statusProjetoDestino = DB::table('projetos')
+                        ->where('id', $projetoIdRequisicao)
+                        ->value('status');
+                    
+                    if ($statusProjetoDestino !== 'ativo') {
+                        return;
+                    }
+
 
                     $projetosAtivosIds = DB::table('tarefas')
                         ->join('projetos', 'tarefas.projeto_id', '=', 'projetos.id')
                         ->where('tarefas.membro_id', $value)
                         ->where('tarefas.status', '!=', 'excluida') // Ignora tarefas na lixeira
-                        ->where('projetos.data_fim', '>=', now()->toDateString())
+                        ->where('projetos.status', 'ativo')
                         ->pluck('tarefas.projeto_id')
                         ->unique()
                         ->toArray();
