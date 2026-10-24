@@ -25,8 +25,10 @@ export async function updateProjeto(form: FormData) {
   return JSON.stringify(res)
 }
 
-export async function destroyProjeto(id: string) {
-  const res = await api('DELETE', `/projetos/${id}`)
+export async function destroyProjeto(id: string, justificativa_exclusao: string) {
+  const res = await api('DELETE', `/projetos/${id}`, {
+    data: { justificativa_exclusao }
+  })
 
   if (!res.error) {
     revalidatePath('/admin/projetos')

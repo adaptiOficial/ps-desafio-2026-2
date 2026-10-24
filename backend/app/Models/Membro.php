@@ -13,9 +13,25 @@ class Membro extends Model
     protected $fillable = [
         'nome',
         'email',
+        'senha',
         'cor_favorita',
         'data_aniversario',
         'image',
+        'status',
+        'justificativa_desligamento',
+        'justificativa_exclusao'
+    ];
+
+    /**
+     * Relacionamento: Um Membro tem muitas Tarefas
+     */
+    public function tarefas()
+    {
+        return $this->hasMany(\App\Models\Tarefa::class, 'membro_id', 'id');
+    }
+
+    protected $attributes = [
+        'status' => 'ativo',
     ];
 
     protected $hidden = [

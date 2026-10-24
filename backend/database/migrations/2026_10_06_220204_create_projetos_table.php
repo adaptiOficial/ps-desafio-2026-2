@@ -18,6 +18,8 @@ return new class extends Migration
             $table->text('descricao');
             $table->date('data_inicio');
             $table->date('data_fim');
+            $table->string('status')->default('ativo');
+            $table->text('justificativa_exclusao')->nullable();
             $table->timestamps();
         });
     }

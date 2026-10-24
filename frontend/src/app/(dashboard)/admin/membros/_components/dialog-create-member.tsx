@@ -16,9 +16,10 @@ import { useToast } from '@/components/use-toast'
 
 interface DialogCreateMemberProps {
   children: React.ReactNode
+  onSuccess?: () => void
 }
 
-export function DialogCreateMember({ children }: DialogCreateMemberProps) {
+export function DialogCreateMember({ children, onSuccess }: DialogCreateMemberProps) {
   const [open, setOpen] = useState<boolean>()
   const { toast } = useToast()
 
@@ -36,6 +37,10 @@ export function DialogCreateMember({ children }: DialogCreateMemberProps) {
         title: 'Membro criado com sucesso!',
       })
       setOpen(false)
+            
+      if (onSuccess) {
+        onSuccess() 
+      }
     }
   }
 
