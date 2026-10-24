@@ -38,6 +38,7 @@ export default function ListProjects() {
   const [projetos, setProjetos] = useState<ProjetosResponse | null>(null);
   const [activeTab, setActiveTab] = useState<'ativo' | 'concluidos' | 'excluidos'>('ativo');
   const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const fetchProjetos = async () => {
     setLoading(true);
@@ -50,27 +51,50 @@ export default function ListProjects() {
     fetchProjetos();
   }, []);
 
+  
   const handleToggleStatus = async (projeto: projetoType) => {
+    setActionError(null);
+
     const novoStatus = projeto.status === 'ativo' ? 'concluido' : 'ativo';
-    const { error } = await api('PATCH', `/projetos/${projeto.id}/status`, { data: { status: novoStatus } });
-    
+
+    const { error } = await api(
+      'PATCH',
+      `/projetos/${projeto.id}/status`,
+      { data: { status: novoStatus } }
+    );
+
     if (error) {
-      alert("Erro ao alterar status: " + error.message);
+      setActionError(
+        error.message.replace(/^Error:\s*/i, '')
+      );
       return;
     }
+
     fetchProjetos();
     router.refresh();
   };
 
-  const handleRestore = async (id: string) => {
-    const { error } = await api('POST', `/projetos/${id}/restore`);
-    if (error) {
-      alert("Erro ao restaurar: " + error.message);
-      return;
-    }
-    fetchProjetos();
-    router.refresh();
-  };
+
+  
+const handleRestore = async (id: string) => {
+  setActionError(null);
+
+  const { error } = await api(
+    'POST',
+    `/projetos/${id}/restore`
+  );
+
+  if (error) {
+    setActionError(
+      error.message.replace(/^Error:\s*/i, '')
+    );
+    return;
+  }
+
+  fetchProjetos();
+  router.refresh();
+};
+
 
   if (loading) {
     return <DashboardContainer>Carregando projetos...</DashboardContainer>;
@@ -117,7 +141,33 @@ export default function ListProjects() {
           </Button>
         </DialogCreateProjeto>
       </DashboardContainer>
-            
+      
+    {actionError && (
+      <div
+        role="alert"
+        className="mb-4 flex items-start justify-between gap-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-800"
+      >
+        <div className="flex-1">
+          <p className="font-semibold">
+            Não foi possível concluir a operação
+          </p>
+
+          <p className="mt-1 text-sm">
+            {actionError}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setActionError(null)}
+          className="rounded-md px-2 py-1 text-sm font-medium hover:bg-red-100"
+          aria-label="Fechar mensagem de erro"
+        >
+          Fechar
+        </button>
+      </div>
+    )}
+
       <DashboardContainer className="w-full">
         <div className="w-full overflow-x-auto">
           <Table className="min-w-full">
