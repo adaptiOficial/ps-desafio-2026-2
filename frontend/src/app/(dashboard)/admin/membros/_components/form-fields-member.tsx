@@ -1,40 +1,45 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/button";
+import { Button } from '@/components/button'
 import {
   FormFieldsGroup,
   FormField,
   ImageForm,
   handleImageChange,
-} from "@/components/dashboard/form";
-import { DialogFooter } from "@/components/dialog";
-import { Input } from "@/components/input";
-import { Label } from "@/components/label";
-import { cn } from "@/lib/utils";
-import { membroType } from "@/types/member";
-import { useState } from "react";
-import { useFormStatus } from "react-dom";
+} from '@/components/dashboard/form'
+import { DialogFooter } from '@/components/dialog'
+import { DateInputBr } from '@/components/date-input-br'
+import { Input } from '@/components/input'
+import { Label } from '@/components/label'
+import { cn } from '@/lib/utils'
+import { membroType } from '@/types/member'
+import { useState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 interface FormFieldsMemberProps {
-  member?: membroType;
-  readOnly?: boolean;
+  member?: membroType
+  readOnly?: boolean
 }
 
 export default function FormFieldsMember({
   member,
   readOnly,
 }: FormFieldsMemberProps) {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
   const [imagePreview, setImagePreview] = useState<string | undefined>(
     member?.image,
-  );
+  )
 
   return (
     <>
       <FormFieldsGroup>
-        {member && <Input defaultValue={member.id} type="text" name="id" hidden />}
+        {member && (
+          <Input defaultValue={member.id} type="text" name="id" hidden />
+        )}
         <FormField>
-          <Label htmlFor="nome">Nome</Label>
+          <Label htmlFor="nome" required>
+            Nome
+          </Label>
           <Input
             name="nome"
             id="nome"
@@ -47,12 +52,15 @@ export default function FormFieldsMember({
           />
         </FormField>
         <FormField>
-          <Label htmlFor="email">E-mail</Label>
+          <Label htmlFor="email" required>
+            E-mail
+          </Label>
           <Input
             name="email"
             id="email"
             type="email"
             placeholder="Insira o e-mail"
+            defaultValue={member?.email}
             disabled={pending}
             readOnly={readOnly}
             required
@@ -60,16 +68,20 @@ export default function FormFieldsMember({
           />
         </FormField>
         <FormField>
-          <Label htmlFor="senha">Senha</Label>
+          <Label htmlFor="senha" required={!member}>
+            Senha
+          </Label>
           <Input
             name="senha"
             id="senha"
             type="password"
-            placeholder="Insira a senha"
+            placeholder={
+              member ? 'Deixe em branco para manter' : 'Insira a senha'
+            }
             disabled={pending}
             readOnly={readOnly}
             required={!member}
-            minLength={8}
+            minLength={member ? undefined : 8}
           />
         </FormField>
         <FormField>
@@ -81,39 +93,43 @@ export default function FormFieldsMember({
             defaultValue={member?.cor_favorita}
             disabled={pending}
             readOnly={readOnly}
-            required
             minLength={2}
           />
         </FormField>
         <FormField>
           <Label htmlFor="data_aniversario">Data de aniversário</Label>
-          <Input
+          <DateInputBr
             name="data_aniversario"
             id="data_aniversario"
-            type="date"
             defaultValue={member?.data_aniversario}
             disabled={pending}
             readOnly={readOnly}
-            required
           />
         </FormField>
         <FormField>
           <Label htmlFor="image">Imagem</Label>
-          <Input
-            name="image"
-            id="image"
-            type="file"
-            accept="image/*"
-            disabled={pending}
-            readOnly={readOnly}
-            onChange={(event) => handleImageChange(event, setImagePreview)}
-          />
-          {imagePreview && (
+          {!readOnly && (
+            <Input
+              name="image"
+              id="image"
+              type="file"
+              accept="image/*"
+              disabled={pending}
+              onChange={(event) => handleImageChange(event, setImagePreview)}
+            />
+          )}
+          {imagePreview ? (
             <ImageForm
               src={imagePreview}
-              alt="Pré-visualização da imagem do membro"
+              alt="Imagem do membro"
               className="max-h-48 w-full rounded border"
             />
+          ) : (
+            readOnly && (
+              <p className="col-span-3 text-left text-sm text-muted-foreground">
+                Nenhuma imagem cadastrada.
+              </p>
+            )
           )}
         </FormField>
       </FormFieldsGroup>
@@ -123,5 +139,5 @@ export default function FormFieldsMember({
         </Button>
       </DialogFooter>
     </>
-  );
+  )
 }

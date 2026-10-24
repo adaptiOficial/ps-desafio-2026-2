@@ -2,31 +2,56 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ValidaDatasProjetoNaoFeriado;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProjetoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    use ValidaDatasProjetoNaoFeriado;
+
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'nome' => 'required',
-            'nome_cliente' => 'required',
-            'descricao' => 'required',
-            'data_inicio' => 'required|date',
-            'data_fim' => 'required|date',
+            'nome' => ['required', 'string', 'max:255'],
+            'nome_cliente' => ['required', 'string', 'max:255'],
+            'descricao' => ['required', 'string'],
+            'data_inicio' => ['required', 'date'],
+            'data_fim' => ['required', 'date', 'after_or_equal:data_inicio'],
+        ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $this->validarDatasProjetoNaoFeriado($validator);
+        });
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'nome' => 'nome',
+            'nome_cliente' => 'nome do cliente',
+            'descricao' => 'descrição',
+            'data_inicio' => 'data de início',
+            'data_fim' => 'data de término',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'data_fim.after_or_equal' => 'A data de término deve ser igual ou posterior à data de início.',
         ];
     }
 }
