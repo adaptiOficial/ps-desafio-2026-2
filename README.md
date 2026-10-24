@@ -163,6 +163,8 @@ Prints das telas e dos alertas de erro: https://drive.google.com/drive/folders/1
 
 ## 6. Extras
 
-1. **Datas dos aniversários na tela de membros** também corrigidas (apareciam um dia antes). Arquivo: `list-member.tsx`.
-2. **`react-icons` atualizado para 5.7.0:** a versão antiga não tinha ícones usados no menu e na tela de projetos, e a página quebrava. Arquivo: `frontend/package.json`.
-3. **Tarefa só para membro alocado no projeto.** Arquivo: `TarefaController` (`verificarAlocacao`). Para ver: tela de Tarefas, "Nova tarefa", escolha um membro que não está no projeto.
+**Datas dos aniversários na tela de membros** também corrigidas (apareciam um dia antes). Arquivo: `list-member.tsx`.
+
+**`react-icons` atualizado para 5.7.0:** a versão antiga não tinha ícones usados no menu e na tela de projetos, e a página quebrava. Arquivo: `frontend/package.json`.
+
+**Tarefa só para membro alocado no projeto.** Arquivo: `TarefaController` (`verificarAlocacao`). Para ver: tela de Tarefas, "Nova tarefa", escolha um membro que não está no projeto.
