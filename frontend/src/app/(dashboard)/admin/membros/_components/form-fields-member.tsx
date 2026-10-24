@@ -29,6 +29,10 @@ export default function FormFieldsMember({
     member?.image,
   );
 
+  const defaultBirthDate = member?.data_aniversario
+    ? String(member.data_aniversario).split("T")[0]
+    : undefined;
+
   return (
     <>
       <FormFieldsGroup>
@@ -53,25 +57,28 @@ export default function FormFieldsMember({
             id="email"
             type="email"
             placeholder="Insira o e-mail"
+            defaultValue={member?.email}
             disabled={pending}
             readOnly={readOnly}
             required
             maxLength={255}
           />
         </FormField>
-        <FormField>
-          <Label htmlFor="senha">Senha</Label>
-          <Input
-            name="senha"
-            id="senha"
-            type="password"
-            placeholder="Insira a senha"
-            disabled={pending}
-            readOnly={readOnly}
-            required={!member}
-            minLength={8}
-          />
-        </FormField>
+        {!readOnly && (
+          <FormField>
+            <Label htmlFor="senha">Senha</Label>
+            <Input
+              name="senha"
+              id="senha"
+              type="password"
+              placeholder={member ? "Deixe em branco para manter a atual" : "Insira a senha"}
+              disabled={pending}
+              readOnly={readOnly}
+              required={!member}
+              minLength={8}
+            />
+          </FormField>
+        )}
         <FormField>
           <Label htmlFor="cor_favorita">Cor favorita</Label>
           <Input
@@ -81,7 +88,7 @@ export default function FormFieldsMember({
             defaultValue={member?.cor_favorita}
             disabled={pending}
             readOnly={readOnly}
-            required
+            required={!member}
             minLength={2}
           />
         </FormField>
@@ -91,7 +98,7 @@ export default function FormFieldsMember({
             name="data_aniversario"
             id="data_aniversario"
             type="date"
-            defaultValue={member?.data_aniversario}
+            defaultValue={defaultBirthDate}
             disabled={pending}
             readOnly={readOnly}
             required

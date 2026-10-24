@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class StoreMembroRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreMembroRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; //Estava como falso e estava bloqueado as requisições de store (403 Forbidden), alterei para true.
     }
 
     /**
@@ -23,9 +24,9 @@ class StoreMembroRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required'],
-            'email' => ['required', 'string', 'max:255'],
-            'senha' => [
+            'nome' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('membros', 'email')], //Agora impede email duplicados.
+            'senha' => [ 'required', 'string', 'max:255',
                 Password::min(8)
                     ->letters()
                     ->mixedCase()
@@ -33,7 +34,7 @@ class StoreMembroRequest extends FormRequest
                     ->symbols(),
             ],
             'cor_favorita' => ['nullable', 'string', 'max:255'],
-            'data_aniversario' => ['nullable', 'date'],
+            'data_aniversario' => ['required', 'date'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp'],
         ];
     }

@@ -20,6 +20,13 @@ export default function FormFieldsProjeto({
 }: FormFieldsProjetoProps) {
   const { pending } = useFormStatus()
 
+  const defaultDataInicio = projeto?.data_inicio
+    ? projeto.data_inicio.split('T')[0]
+    : undefined
+  const defaultDataFim = projeto?.data_fim
+    ? projeto.data_fim.split('T')[0]
+    : undefined
+
   return (
     <>
       <FormFieldsGroup>
@@ -33,6 +40,7 @@ export default function FormFieldsProjeto({
             defaultValue={projeto?.nome}
             disabled={pending}
             readOnly={readOnly}
+            required
           />
         </FormField>
         <FormField>
@@ -44,6 +52,7 @@ export default function FormFieldsProjeto({
             defaultValue={projeto?.nome_cliente}
             disabled={pending}
             readOnly={readOnly}
+            required
           />
         </FormField>
         <FormField>
@@ -58,14 +67,31 @@ export default function FormFieldsProjeto({
           />
         </FormField>
         <FormField>
+          <Label htmlFor="status">Status</Label>
+          <select
+            name="status"
+            id="status"
+            defaultValue={projeto?.status ?? 'ativo'}
+            disabled={pending || readOnly}
+            required
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="planejado">Planejamento</option>
+            <option value="ativo">Ativo</option>
+            <option value="concluido">Concluído</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </FormField>
+        <FormField>
           <Label htmlFor="data_inicio">Data de início</Label>
           <Input
             name="data_inicio"
             id="data_inicio"
             type="date"
-            defaultValue={projeto?.data_inicio}
+            defaultValue={defaultDataInicio}
             disabled={pending}
             readOnly={readOnly}
+            required
           />
         </FormField>
         <FormField>
@@ -74,7 +100,7 @@ export default function FormFieldsProjeto({
             name="data_fim"
             id="data_fim"
             type="date"
-            defaultValue={projeto?.data_fim}
+            defaultValue={defaultDataFim}
             disabled={pending}
             readOnly={readOnly}
           />
