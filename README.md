@@ -20,6 +20,32 @@ Este repositório contém a solução desenvolvida para o Desafio Técnico do Pr
 
 ---
 
+### Clonando o Repositório
+
+Para executar o sistema localmente, primeiro é necessário obter uma cópia do projeto disponível no GitHub.
+
+1. Acesse o repositório do projeto no GitHub.
+2. Clique no botão **Code** e copie a URL HTTPS do repositório.
+3. Abra um terminal na pasta em que deseja armazenar o projeto.
+4. Execute:
+
+```bash
+git clone https://github.com/juliapsantos-wq/ps-desafio-2026-2.git
+```
+
+5. Acesse a pasta clonada:
+
+```bash
+cd ps-desafio-2026-2
+```
+
+A estrutura principal do projeto está organizada em dois diretórios:
+
+- `backend/`: aplicação Laravel, responsável pela API, regras de negócio e persistência de dados.
+- `frontend/`: aplicação Next.js, responsável pela interface e comunicação com a API.
+
+A configuração de cada aplicação deve ser realizada separadamente, conforme as instruções a seguir.
+
 ### 1. Configurando o Backend (Laravel)
 
 1. Navegue até a pasta do backend:
@@ -31,6 +57,57 @@ Este repositório contém a solução desenvolvida para o Desafio Técnico do Pr
 3. Copie o arquivo de ambiente e gere a chave da aplicação:
    cp .env.example .env
    php artisan key:generate
+
+   #### Configuração do Banco de Dados (MySQL)
+
+   O sistema utiliza MySQL para armazenar os dados de projetos, membros, tarefas e usuários.
+
+   Antes de executar as migrations, é necessário configurar a conexão com o banco de dados.
+
+   **1. Inicie o servidor MySQL**
+
+   Certifique-se de que o serviço MySQL esteja em execução. É possível utilizar ferramentas como XAMPP ou uma instalação local do MySQL.
+
+   **2. Crie o banco de dados**
+
+   Utilizando o MySQL ou a interface do phpMyAdmin, execute:
+
+   ```sql
+   CREATE DATABASE IF NOT EXISTS mej_gestao
+   CHARACTER SET utf8mb4
+   COLLATE utf8mb4_unicode_ci;
+   ```
+
+   O nome `mej_gestao` é uma sugestão e pode ser alterado conforme a configuração local.
+
+   **3. Configure as variáveis de ambiente**
+
+   No arquivo `backend/.env`, configure as variáveis de conexão:
+
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=mej_gestao
+   DB_USERNAME=seu_usuario_mysql
+   DB_PASSWORD=sua_senha_mysql
+   ```
+
+   Substitua o usuário e a senha pelas credenciais da sua instalação do MySQL.
+
+   Caso escolha outro nome para o banco, atualize também a variável `DB_DATABASE`.
+
+   **4. Execute as migrations e os Seeders**
+
+   Com o banco configurado, execute no terminal da pasta `backend`:
+
+   ```bash
+   php artisan migrate --seed
+   ```
+
+   Esse comando cria as tabelas definidas nas migrations e executa os Seeders registrados no `DatabaseSeeder.php`, populando o banco com dados iniciais para desenvolvimento.
+
+   **Observação:** recomenda-se executar esse procedimento de povoamento em um banco novo de desenvolvimento, evitando inserir dados de teste duplicados em um banco já utilizado.
 
 4. Execute as migrações e popule o banco de dados (Seeders):
    php artisan migrate --seed
@@ -67,7 +144,8 @@ Este repositório contém a solução desenvolvida para o Desafio Técnico do Pr
 ### Estrutura do Banco de Dados
 A modelagem integra três entidades principais através de relacionamentos no Eloquent ORM:
 
-- **Projetos (`projetos`):** `id` (PK), `nome`, `cliente`, `descricao`, `data_inicio`, `data_fim`.
+- **Projetos (`projetos`):** `id` (UUID, PK), `nome`, `nome_cliente`, `descricao`, `data_inicio`, `data_fim`, `status`, `justificativa_exclusao`.
+   A entidade utiliza identificadores UUID como chave primária e implementa exclusão lógica (*Soft Deletes*), permitindo a recuperação de projetos excluídos. O campo `status` representa a situação atual do projeto, enquanto `justificativa_exclusao` armazena o motivo de sua exclusão.
 - **Membros (`membros`):** `id` (PK), `nome`, `email`, `cargo`.
 - **Tarefas (`tarefas`):** `id` (PK), `titulo`, `status`, `projeto_id` (FK), `membro_id` (FK).
 
@@ -180,18 +258,194 @@ As validações garantem o cumprimento das regras testadas durante a criação d
 
 ## Documentação da API
 
-| Método | Endpoint | Descrição | Parâmetros Principais | Resposta Esperada |
-| :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/api/projetos` | Lista todos os projetos | N/A | `200 OK` (Array) |
-| `POST` | `/api/projetos` | Cria um novo projeto | `nome`, `data_inicio`, `data_fim` | `201 Created` |
-| `GET` | `/api/membros` | Lista todos os membros | N/A | `200 OK` (Array) |
-| `POST` | `/api/membros` | Cadastra um novo membro | `nome`, `email`, `cargo` | `201 Created` |
-| `GET` | `/api/tarefas` | Lista todas as tarefas | N/A | `200 OK` (Array) |
-| `POST` | `/api/tarefas` | Cria e atribui uma nova tarefa | `titulo`, `projeto_id`, `membro_id` | `201 Created` ou `422 Unprocessable Entity` (Bloqueio) |
+| Método | Endpoint | Descrição |
+|---|---|---|
+| `GET` | `/projetos` | Lista projetos agrupados em `ativo`, `concluidos` e `excluidos`. |
+| `POST` | `/projetos` | Cadastra um novo projeto. |
+| `GET` | `/projetos/{id}` | Consulta um projeto específico. |
+| `PUT/PATCH` | `/projetos/{id}` | Atualiza os dados de um projeto. |
+| `DELETE` | `/projetos/{id}` | Exclui um projeto. |
+| `PATCH` | `/projetos/{id}/status` | Altera o status de um projeto, respeitando as regras de alocação. |
+| `POST` | `/projetos/{id}/restore` | Restaura um projeto excluído. |
+| `GET` | `/membros` | Lista os membros cadastrados. |
+| `POST` | `/membros` | Cadastra um novo membro. |
+| `GET` | `/membros/{id}` | Consulta um membro específico. |
+| `PUT/PATCH` | `/membros/{id}` | Atualiza os dados de um membro. |
+| `DELETE` | `/membros/{id}` | Exclui um membro. |
+| `GET` | `/tarefas` | Lista tarefas e seus relacionamentos com projetos e membros. |
+| `POST` | `/tarefas` | Cria uma tarefa, validando os limites de alocação e sobrecarga. |
+| `GET` | `/tarefas/{id}` | Consulta uma tarefa específica. |
+| `PUT/PATCH` | `/tarefas/{id}` | Atualiza uma tarefa. |
+| `DELETE` | `/tarefas/{id}` | Exclui uma tarefa. |
+
+### Detalhamento dos Endpoints
+
+#### Cadastro de Tarefas
+
+**Endpoint:** `POST /tarefas`
+
+**Descrição:** Cadastra uma nova tarefa vinculada obrigatoriamente a um projeto e a um membro responsável.
+
+**Parâmetros:**
+
+| Campo | Tipo | Obrigatório | Descrição |
+|---|---|---|---|
+| `titulo` | string | Sim | Título da tarefa, com até 255 caracteres. |
+| `descricao` | string | Não | Descrição detalhada da tarefa. |
+| `projeto_id` | UUID | Sim | Identificador de um projeto existente. |
+| `membro_id` | UUID | Sim | Identificador de um membro existente. |
+
+**Resposta de sucesso — HTTP 201 Created:**
+
+A API retorna um objeto JSON com os dados da tarefa cadastrada, incluindo os relacionamentos `projeto` e `membro`.
+
+**Resposta de erro — HTTP 422 Unprocessable Entity:**
+
+O Laravel retorna um erro de validação quando algum campo é inválido ou quando uma das regras de negócio é violada.
+
+As principais validações são:
+
+- O título da tarefa é obrigatório.
+- O projeto informado deve existir no banco de dados.
+- O membro responsável deve existir no banco de dados.
+- Um membro não pode participar de mais de dois projetos ativos distintos simultaneamente.
+- Um membro não pode possuir mais de cinco tarefas ativas simultaneamente.
+
+O backend utiliza a classe `StoreTarefaRequest` para validar essas regras antes de permitir a criação da tarefa.
+
+#### Gerenciamento de Projetos
+
+A API disponibiliza operações para cadastro, consulta, atualização, exclusão lógica, alteração de status e restauração de projetos.
+
+**Listagem de Projetos — `GET /projetos`**
+
+Retorna os projetos cadastrados, organizados em três categorias:
+
+- `ativo`: projetos com status `ativo`.
+- `concluidos`: projetos com status `concluido`.
+- `excluidos`: projetos excluídos logicamente, recuperados por meio do método `onlyTrashed()` do Eloquent.
+
+As listagens incluem os relacionamentos entre projetos, tarefas e membros responsáveis.
+
+**Resposta de sucesso:** HTTP `200 OK`.
+
+**Cadastro de Projetos — `POST /projetos`**
+
+Cria um novo projeto utilizando os dados previamente validados pela classe `StoreProjetoRequest`.
+
+**Resposta de sucesso:** HTTP `201 Created`, contendo o projeto cadastrado.
+
+**Consulta de Projeto — `GET /projetos/{id}`**
+
+Retorna os dados do projeto correspondente ao identificador informado.
+
+**Resposta de sucesso:** HTTP `200 OK`.
+
+**Atualização de Projeto — `PUT/PATCH /projetos/{id}`**
+
+Atualiza os dados de um projeto existente por meio das validações definidas em `UpdateProjetoRequest`.
+
+**Resposta de sucesso:** HTTP `200 OK`, contendo o projeto atualizado.
+
+**Exclusão de Projeto — `DELETE /projetos/{id}`**
+
+Realiza a exclusão lógica de um projeto, preservando seu registro no banco de dados.
+
+A operação exige o parâmetro:
+
+| Campo | Tipo | Obrigatório | Validação |
+|---|---|---|---|
+| `justificativa_exclusao` | string | Sim | Mínimo de 5 caracteres |
+
+A justificativa é armazenada antes da exclusão lógica, permitindo consultar posteriormente o motivo da remoção.
+
+**Resposta de sucesso — HTTP 200 OK:**
+
+```json
+{
+  "message": "Projeto excluído com sucesso."
+}
+```
+
+**Alteração de Status — `PATCH /projetos/{id}/status`**
+
+Permite alterar o status de um projeto entre `ativo` e `concluido`, conforme as ações disponibilizadas na interface.
+
+Parâmetro utilizado:
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `status` | string | Novo status solicitado para o projeto. |
+
+Ao tentar reativar um projeto concluído, o backend verifica se algum membro vinculado às suas tarefas ultrapassaria o limite de dois projetos ativos.
+
+Se a regra for violada, a operação é bloqueada com HTTP `422 Unprocessable Entity` e uma mensagem explicativa.
+
+**Restauração de Projeto — `POST /projetos/{id}/restore`**
+
+Restaura um projeto anteriormente excluído logicamente.
+
+Se o projeto possuir status `ativo`, o backend verifica previamente se sua restauração provocaria uma violação do limite de dois projetos ativos por membro.
+
+Quando a operação é permitida, a justificativa de exclusão é removida e o projeto é restaurado.
+
+**Resposta de sucesso — HTTP 200 OK:**
+
+```json
+{
+  "message": "Projeto restaurado com sucesso."
+}
+```
+
+**Tratamento de Erros**
+
+As operações podem retornar erros de validação HTTP `422`, além de respostas HTTP `404` quando o registro solicitado não é encontrado.
+
+As mensagens retornadas pelo backend são utilizadas pelo frontend para informar o motivo de operações não permitidas, incluindo tentativas de reativação ou restauração que violem as regras de alocação.
+
+#### Validação dos Dados de Projetos
+
+O cadastro e a atualização de projetos utilizam classes Form Request do Laravel para validar os dados recebidos pela API.
+
+**Cadastro — `StoreProjetoRequest`**
+
+Os seguintes campos são obrigatórios:
+
+| Campo | Tipo esperado | Descrição |
+|---|---|---|
+| `nome` | Texto | Nome do projeto |
+| `nome_cliente` | Texto | Nome do cliente |
+| `descricao` | Texto | Descrição do projeto |
+| `data_inicio` | Data | Data de início do projeto |
+| `data_fim` | Data | Data prevista para o término |
+
+A validação utiliza a regra `after_or_equal:data_inicio`, impedindo o cadastro de projetos cuja data de término seja anterior à data de início.
+
+**Edição — `UpdateProjetoRequest`**
+
+A atualização utiliza as mesmas validações de datas, acrescentando regras explícitas de tipo e tamanho para os campos textuais:
+
+- `nome`: string obrigatória, com até 255 caracteres.
+- `nome_cliente`: string obrigatória, com até 255 caracteres.
+- `descricao`: string obrigatória.
+- `data_inicio`: data válida e obrigatória.
+- `data_fim`: data válida e obrigatória, igual ou posterior à data de início.
+
+Na implementação atual, todos esses campos são obrigatórios durante a atualização, inclusive nas requisições `PATCH`.
+
+**Tratamento de erros**
+
+Quando os dados não atendem às regras, o Laravel interrompe a operação e retorna os erros de validação. Nas requisições JSON da API, esses erros são apresentados com status HTTP `422 Unprocessable Entity`.
+
+Uma das mensagens personalizadas implementadas é:
+
+> A data de término não pode ser anterior à data de início.
+
+Essa validação garante a consistência das informações temporais dos projetos e impede registros com datas incompatíveis.
 
 ---
 
-## Manutenção e Correção de Bugs (Missão 1)
+## Manutenção e Correção de Bugs
 
 Durante a fase de manutenção e auditoria do código herdado, foram identificados e corrigidos os seguintes problemas:
 
@@ -200,22 +454,82 @@ Durante a fase de manutenção e auditoria do código herdado, foram identificad
 3. **Loop de Redirecionamento no Frontend:** Ajustado o arquivo `middleware.ts` do NextAuth, resolvendo o bug de loop infinito de redirecionamentos ao tentar acessar páginas administrativas.
 4. **Ícones Desatualizados (`react-icons/lu`):** Corrigidos os nomes dos ícones que estavam quebrando o layout do sistema (`LuHouse` alterado para `LuHome`, e `LuCirclePlus` alterado para `LuPlusCircle`).
 5. **Comunicação de API (CSRF e CORS):** Adequada a rota de tarefas (`routes/api.php`) isentando-a de verificações de estado Sanctum conflitantes no ambiente de desenvolvimento, e refatorado o payload de submissão do frontend (`dialog-information-project.tsx`) para usar corretamente o utilitário `api()` pré-configurado com a propriedade `data`.
-**6. Tratamento Visual de Erros na Alteração de Status dos Projetos:** Foi aprimorada a experiência do usuário na listagem de projetos, substituindo os alertas nativos do navegador (`alert()`) por mensagens de erro integradas à interface, estilizadas com Tailwind CSS.
+6. **Tratamento Visual de Erros na Alteração de Status dos Projetos:** Foi aprimorada a experiência do usuário na listagem de projetos, substituindo os alertas nativos do navegador (`alert()`) por mensagens de erro integradas à interface, estilizadas com Tailwind CSS.
 A implementação foi realizada no componente `list-project.tsx`, utilizando o hook `useState` do React para controlar a exibição das mensagens retornadas pela API Laravel.
 Quando uma operação de alteração de status ou restauração de projeto falha, o sistema apresenta um alerta visual contendo a descrição do erro e uma opção para dispensar a mensagem.
 Essa melhoria foi validada por meio de três testes funcionais:
 - Exibição correta da mensagem de erro na interface.
 - Funcionamento do botão para fechar o alerta.
 - Preservação do status do projeto após uma tentativa de reativação bloqueada.
+7. **Aprimoramento das Validações de Status e Alocação de Projetos:** Foram realizadas melhorias no `ProjetoController.php` para garantir a consistência das regras de negócio durante as operações de alteração de status, reativação e restauração de projetos.
+
+As principais melhorias incluem:
+
+- **Validação do status:** o método `updateStatus()` passou a aceitar exclusivamente os valores `ativo` e `concluido`, utilizando a validação do Laravel. Valores inválidos são rejeitados com HTTP `422`.
+- **Consistência na contagem de alocações:** o método `membroExcedeLimite()` foi ajustado para desconsiderar tarefas com status `excluida` ao contabilizar os projetos ativos associados a um membro.
+- **Reativação e restauração:** a seleção dos membros vinculados aos projetos também passou a desconsiderar tarefas excluídas, evitando bloqueios indevidos durante essas operações.
+
+**Testes funcionais realizados:**
+
+1. Reativação de projeto sem violação do limite de alocação — aprovado.
+2. Bloqueio de reativação que ultrapassaria dois projetos ativos por membro — aprovado.
+3. Desconsideração de tarefas excluídas na verificação de alocações — aprovado.
+
+Essas melhorias reforçam a integridade das regras de negócio e a confiabilidade das operações de gerenciamento de projetos.
 
 ---
+
 
 ## Demonstração Visual
 
-- [Clique aqui para acessar os prints de demonstração](COLOQUE_SEU_LINK_AQUI)
-*(A pasta contém imagens do sistema rodando e validações de erro funcionando na prática).*
+As capturas de tela a seguir demonstram as principais funcionalidades
+implementadas e as validações realizadas no sistema.
+
+### 1. Dashboard
+
+Tela principal com os indicadores de membros e projetos
+cadastrados, obtidos por meio da API Laravel.
+
+![Dashboard do sistema](docs/prints/dashboard.png)
+
+### 2. Cadastro de Tarefas
+
+Interface de criação de tarefas, permitindo vincular cada tarefa
+a um projeto e atribuí-la obrigatoriamente a um membro responsável.
+
+![Cadastro de tarefas](docs/prints/cadastro-tarefas.png)
+
+### 3. Bloqueio do Terceiro Projeto Ativo
+
+Demonstração da regra de negócio que impede um membro de
+participar de mais de dois projetos ativos distintos simultaneamente.
+
+![Bloqueio do terceiro projeto](docs/prints/bloqueio-terceiro-projeto.png)
+
+### 4. Controle de Sobrecarga de Tarefas
+
+Validação adicional que impede a atribuição de mais de cinco
+tarefas ativas simultaneamente a um mesmo membro.
+
+![Limite de cinco tarefas](docs/prints/limite-cinco-tarefas.png)
+
+### 5. Validação de Datas dos Projetos
+
+Mensagem de erro apresentada quando a data de término
+informada é anterior à data de início do projeto.
+
+![Validação de datas](docs/prints/erro-data-projeto.png)
+
+### 6. Bloqueio de Reativação de Projetos
+
+Alerta integrado à interface, exibido quando a reativação
+de um projeto faria algum membro ultrapassar o limite
+de dois projetos ativos.
+
+![Erro de reativação](docs/prints/erro-reativacao-projeto.png)
 
 ---
+
 
 ## Extras e Diferenciais Implementados
 

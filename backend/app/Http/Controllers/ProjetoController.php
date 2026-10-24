@@ -80,13 +80,27 @@ class ProjetoController extends Controller
     /**
      * Altera o status entre 'ativo' e 'concluido'
      */
+    
     public function updateStatus(Request $request, String $id): JsonResponse
     {
         $projeto = Projeto::findOrFail($id);
-        $novoStatus = $request->status;
+
+        $validated = $request->validate([
+            'status' => 'required|in:ativo,concluido',
+        ], [
+            'status.required' => 'É obrigatório informar o status do projeto.',
+            'status.in' => 'O status deve ser ativo ou concluído.',
+        ]);
+
+        $novoStatus = $validated['status'];
 
         if ($projeto->status === 'concluido' && $novoStatus === 'ativo') {
-            $membrosIds = $projeto->tarefas()->pluck('membro_id')->unique();
+            
+            $membrosIds = $projeto->tarefas()
+                ->where('status', '!=', 'excluida')
+                ->pluck('membro_id')
+                ->unique();
+
             foreach ($membrosIds as $membroId) {
                 if ($this->membroExcedeLimite($membroId, $projeto->id)) {
                     return response()->json([
@@ -108,7 +122,12 @@ class ProjetoController extends Controller
         $projeto = Projeto::onlyTrashed()->findOrFail($id);
 
         if ($projeto->status === 'ativo') {
-            $membrosIds = $projeto->tarefas()->pluck('membro_id')->unique();
+            
+            $membrosIds = $projeto->tarefas()
+                ->where('status', '!=', 'excluida')
+                ->pluck('membro_id')
+                ->unique();
+
             foreach ($membrosIds as $membroId) {
                 if ($this->membroExcedeLimite($membroId, $projeto->id)) {
                     return response()->json([
@@ -126,12 +145,21 @@ class ProjetoController extends Controller
     /**
      * Helper para verificar a trava de sobrecarga
      */
+    
     private function membroExcedeLimite(string $membroId, ?string $ignorarProjetoId = null): bool
     {
         $count = Projeto::ativos()
-            ->when($ignorarProjetoId, fn($q) => $q->where('id', '!=', $ignorarProjetoId))
-            ->whereHas('tarefas', fn($q) => $q->where('membro_id', $membroId))
+            ->when(
+                $ignorarProjetoId,
+                fn($q) => $q->where('id', '!=', $ignorarProjetoId)
+            )
+            ->whereHas('tarefas', function ($query) use ($membroId) {
+                $query->where('membro_id', $membroId)
+                    ->where('status', '!=', 'excluida');
+            })
             ->count();
+
         return $count >= 2;
     }
+
 }
