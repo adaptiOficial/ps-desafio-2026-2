@@ -13,6 +13,7 @@ class Membro extends Model
     protected $fillable = [
         'nome',
         'email',
+        'senha',
         'cor_favorita',
         'data_aniversario',
         'image',
@@ -21,5 +22,9 @@ class Membro extends Model
     protected $hidden = [
         'senha',
     ];
+
+    public function tarefas() {
+        return $this->hasMany(Tarefa::class);
+    }
 }
 

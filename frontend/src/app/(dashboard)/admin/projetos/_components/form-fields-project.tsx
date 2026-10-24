@@ -48,13 +48,14 @@ export default function FormFieldsProjeto({
         </FormField>
         <FormField>
           <Label htmlFor="descricao">Descrição</Label>
-          <Input
+          <textarea className="flex w-full rounded border border-input bg-background shadow px-3 py-2 text-sm resize-none disabled:opacity-50 disabled:cursor-not-allowed col-start-2 col-end-5"
             name="descricao"
             id="descricao"
             placeholder="Insira a descrição do projeto"
             defaultValue={projeto?.descricao}
             disabled={pending}
             readOnly={readOnly}
+            rows={6}
           />
         </FormField>
         <FormField>

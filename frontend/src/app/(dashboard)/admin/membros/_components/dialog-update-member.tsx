@@ -32,6 +32,7 @@ export function DialogUpdateMember({ member, children }: DialogUpdateMemberProps
 
     if (error) {
       toast({
+        variant: 'destructive',
         title: "Não foi possível editar o membro!",
       });
     } else {

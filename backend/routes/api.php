@@ -20,6 +20,7 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
+Route::apiResource('tarefas', \App\Http\Controllers\TarefaController::class);
 Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
 Route::resource('projetos', \App\Http\Controllers\ProjetoController::class);
 

@@ -25,7 +25,7 @@ export const buttonVariants = cva(
         sm: 'px-4 py-1.5 text-sm [&_svg]:size-4',
         default: 'px-6 py-2 text-base [&_svg]:size-4',
         lg: 'px-8 py-3 text-lg [&_svg]:size-5',
-        icon: 'size-9 text-sm',
+        icon: 'size-7 md:size-9 text-sm',
       },
     },
     defaultVariants: {

@@ -27,7 +27,9 @@ export function DialogCreateProjeto({ children }: DialogCreateProjetoProps) {
     const { error } = await JSON.parse(await createProjeto(newForm))
 
     if (error) {
-      toast({ title: 'Não foi possível criar o projeto!' })
+      toast({ title: 'Não foi possível criar o projeto!',
+        variant: 'destructive',
+        description: 'Erro ao processar a requisição.'})
     } else {
       toast({ title: 'Projeto criado com sucesso!' })
       setOpen(false)

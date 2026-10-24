@@ -7,6 +7,7 @@ use App\Http\Requests\StoreMembroRequest;
 use App\Http\Requests\UpdateMembroRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -24,7 +25,7 @@ class MembroController extends Controller
      */
     public function index(): JsonResponse
     {
-        $membros = $this->membro->all();
+        $membros = $this->membro->orderBy('nome', 'asc')->get();
         return response()->json($membros, Response::HTTP_OK);
     }
 
@@ -35,6 +36,7 @@ class MembroController extends Controller
     public function store(StoreMembroRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        $validatedData['senha'] = Hash::make($validatedData['senha']); // como a senha foi pro $fillable, a senha precisa de hash
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('Membro', 'public');

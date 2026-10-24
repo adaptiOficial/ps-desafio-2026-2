@@ -21,7 +21,7 @@ class ProjetoController extends Controller
      */
     public function index(): JsonResponse
     {
-        $projetos = Projeto::all();
+        $projetos = Projeto::orderBy('nome', 'asc')->get();
         return response()->json($projetos, Response::HTTP_OK);
     }
 

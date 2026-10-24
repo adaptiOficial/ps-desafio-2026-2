@@ -29,7 +29,7 @@ export function DialogUpdateProjeto({ projeto, children }: DialogUpdateProjetoPr
     const { error } = await JSON.parse(await updateProjeto(newForm))
 
     if (error) {
-      toast({ title: 'Não foi possível editar o projeto!' })
+      toast({ variant: 'destructive', title: 'Não foi possível editar o projeto!' })
     } else {
       toast({ title: 'Projeto editado com sucesso!' })
       setOpen(false)

@@ -28,6 +28,7 @@ export function DialogMemberDelete({ id, children }: DialogDeleteMemberProps) {
 
     if (error) {
       toast({
+        variant: 'destructive',
         title: 'Não foi possível excluir o membro!',
       })
     } else {

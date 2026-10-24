@@ -24,7 +24,7 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        'bg-card h-screen w-full flex flex-col border-r z-50',
+        'bg-card md:h-screen w-full flex flex-col border-r z-50',
         className,
       )}
       {...props}
@@ -106,7 +106,7 @@ export function SidebarNav({
 }: ComponentProps<'nav'>) {
   return (
     <nav
-      className={cn('flex-1 p-5 pt-2 space-y-1 overflow-y-auto', className)}
+      className={cn('md:flex-1 p-5 pt-2 space-y-1 overflow-y-auto', className)}
       {...props}
     >
       {children}

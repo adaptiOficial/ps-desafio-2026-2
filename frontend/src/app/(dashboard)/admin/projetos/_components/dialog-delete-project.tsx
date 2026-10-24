@@ -27,7 +27,7 @@ export function DialogProjetoDelete({ id, children }: DialogDeleteProjetoProps) 
     const { error } = await JSON.parse(await destroyProjeto(id))
 
     if (error) {
-      toast({ title: 'Não foi possível excluir o projeto!' })
+      toast({ variant: 'destructive', title: 'Não foi possível excluir o projeto!' })
     } else {
       toast({ title: 'Projeto excluído com sucesso!' })
     }

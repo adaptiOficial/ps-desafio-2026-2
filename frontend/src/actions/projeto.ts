@@ -3,6 +3,16 @@
 import { api } from '@/services/api'
 import { revalidatePath } from 'next/cache'
 
+export async function getProjeto() {
+  const res = await api('GET', '/projetos')
+
+  if (!res.error) {
+    revalidatePath('/admin/projetos')
+  }
+
+  return JSON.stringify(res)
+}
+
 export async function createProjeto(form: FormData) {
   const res = await api('POST', '/projetos', { data: form })
 

@@ -17,4 +17,14 @@ class Projeto extends Model
         'data_inicio',
         'data_fim',
     ];
+
+    public function tarefas() {
+        return $this->hasMany(Tarefa::class, 'idProjeto_vinculado');
+    }
+
+    protected static function booted() {
+        static::deleting(function(Projeto $projeto) {
+            $projeto->tarefas()->get()->each->delete();
+        });
+    }
 }

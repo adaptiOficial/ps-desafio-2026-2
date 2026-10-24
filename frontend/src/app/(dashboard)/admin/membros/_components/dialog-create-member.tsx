@@ -29,7 +29,9 @@ export function DialogCreateMember({ children }: DialogCreateMemberProps) {
 
     if (error) {
       toast({
+        variant: 'destructive',
         title: 'Não foi possível criar o membro!',
+        description: 'Erro ao processar a requisição.'
       })
     } else {
       toast({

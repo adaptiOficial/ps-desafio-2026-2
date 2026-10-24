@@ -62,7 +62,7 @@ export function DashboardContainer({
 }: ComponentProps<'div'>) {
   return (
     <div
-      className={cn('bg-card border rounded p-4 space-x-2.5', className)}
+      className={cn('bg-card border rounded p-2 lg:p-4 space-x-2.5', className)}
       {...props}
     >
       {children}
