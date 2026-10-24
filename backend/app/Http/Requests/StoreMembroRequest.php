@@ -12,7 +12,8 @@ class StoreMembroRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // Alterado para true para permitir a criação do membro.
+        return true;
     }
 
     /**
@@ -24,17 +25,21 @@ class StoreMembroRequest extends FormRequest
     {
         return [
             'nome' => ['required'],
-            'email' => ['required', 'string', 'max:255'],
+            //Adicionado a regra de validação para o email, garantindo que seja único.
+            'email' => ['required', 'email', 'max:255', 'unique:membros,email'],
+            //Adicionado required para a senha, garantindo que seja fornecida durante a criação do membro.
             'senha' => [
+                'required',
                 Password::min(8)
                     ->letters()
                     ->mixedCase()
                     ->numbers()
                     ->symbols(),
             ],
+            //Existe a nescessidade da cor favorita ? 
             'cor_favorita' => ['nullable', 'string', 'max:255'],
             'data_aniversario' => ['nullable', 'date'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp'],
+            //'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp'],
         ];
     }
 }

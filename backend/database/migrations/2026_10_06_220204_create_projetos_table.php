@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nome_cliente');
             $table->text('descricao');
             $table->date('data_inicio');
-            $table->date('data_fim');
+            $table->date('data_fim')-> nullable();
             $table->timestamps();
         });
     }

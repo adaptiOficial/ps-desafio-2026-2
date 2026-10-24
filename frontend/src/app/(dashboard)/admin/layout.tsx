@@ -12,7 +12,9 @@ export default async function AdminLayout({
 }>) {
   return (
     <div className="md:grid md:grid-cols-[18rem_1fr]">
-      <SidebarMain />
+      <div className="max-md:max-h-[40vh] max-md:overflow-y-auto">
+        <SidebarMain />
+      </div>
       <div className="md:h-screen md:overflow-y-auto">{children}</div>
     </div>
   )

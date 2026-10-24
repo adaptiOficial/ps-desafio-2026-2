@@ -26,7 +26,8 @@ class StoreProjetoRequest extends FormRequest
             'nome_cliente' => 'required',
             'descricao' => 'required',
             'data_inicio' => 'required|date',
-            'data_fim' => 'required|date',
+            //Erro identificado, a validação da data_fim não estava verificando se a data era apos a data_inicio.
+            'data_fim' => 'nullable|date|after:data_inicio',
         ];
     }
 }

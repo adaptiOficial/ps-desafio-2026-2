@@ -34,6 +34,27 @@ export function DialogInformationProjeto({
           </DialogDescription>
         </DialogHeader>
         <FormFieldsProjeto projeto={projeto} readOnly />
+        <div className="space-y-2">
+        <h4 className="text-sm font-semibold">
+          Membros alocados ({projeto.membros?.length ?? 0})
+        </h4>
+        {projeto.membros?.length ? 
+        (
+          <ul className="max-h-40 space-y-1 overflow-y-auto rounded-md border p-2 text-sm">
+            {projeto.membros.map((m) => (
+              <li key={m.id} className="flex flex-col sm:flex-row sm:justify-between">
+                <span>{m.nome}</span>
+                <span className="text-muted-foreground">{m.email}</span>
+              </li>
+            ))}
+          </ul>
+        ) :
+        (
+          <p className="text-sm text-muted-foreground">
+            Nenhum membro alocado a este projeto.
+          </p>
+        )}
+      </div>
       </DialogContent>
     </Dialog>
   )

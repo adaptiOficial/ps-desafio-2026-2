@@ -10,6 +10,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', function (Request $request) {
         return response()->json(Auth::user(), Response::HTTP_OK);
     });
+    Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
+    Route::apiResource('projetos', \App\Http\Controllers\ProjetoController::class);
+    // Adicionando a rota para vincular membros a projetos
+    Route::apiResource('tarefas', \App\Http\Controllers\TarefaController::class);
+    Route::post('projetos/{id}/vincular-membro', [\App\Http\Controllers\ProjetoController::class, 'vincularMembro']);
+
 });
 
 Route::middleware(['auth:sanctum', 'can:admin'])->group(function () {
@@ -20,7 +26,5 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-Route::apiResource('membros', \App\Http\Controllers\MembroController::class);
-Route::resource('projetos', \App\Http\Controllers\ProjetoController::class);
 
 require __DIR__.'/auth.php';

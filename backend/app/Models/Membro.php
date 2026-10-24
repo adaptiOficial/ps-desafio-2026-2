@@ -9,10 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 class Membro extends Model
 {
     use HasFactory, HasUuids;
-
+    // Definindo o relacionamento entre membros e projetos.
+    public function projetos()
+    {
+        return $this->belongsToMany(Projeto::class, 'membro_projeto');
+    }
     protected $fillable = [
         'nome',
         'email',
+        'senha',
         'cor_favorita',
         'data_aniversario',
         'image',
@@ -21,5 +26,9 @@ class Membro extends Model
     protected $hidden = [
         'senha',
     ];
+    public function getAuthPassword()
+    {
+        return $this->senha;
+    }
 }
 

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreMembroRequest;
 use App\Http\Requests\UpdateMembroRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -35,6 +36,10 @@ class MembroController extends Controller
     public function store(StoreMembroRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        //Verifica se a senha foi fornecida e a criptografa antes de salvar
+        if(isset($validatedData['senha'])){
+            $validatedData['senha'] = Hash::make($validatedData['senha']);
+        }
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('Membro', 'public');
@@ -64,6 +69,15 @@ class MembroController extends Controller
     {
         $validatedData = $request->validated();
         $membro = $this->membro->findOrFail($id);
+
+        // Senha vazia ou ausente: mantém a senha atual
+        if (empty($validatedData['senha'])) {
+            unset($validatedData['senha']);
+        }
+
+        if(isset($validatedData['senha'])){
+            $validatedData['senha'] = Hash::make($validatedData['senha']);
+        }
 
         if ($request->hasFile('image')) {
             if ($membro->image) {

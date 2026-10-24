@@ -18,7 +18,9 @@ class ProjetoFactory extends Factory
     {
         $dataInicio = fake()->dateTimeBetween('2025-01-01', '2027-12-30');
         $dataFim = fake()->dateTimeBetween(
-            $dataInicio->modify('+1 day'),
+        
+            //Erro identificado foi a falta de usar um clone para criar uma cópia do objeto DateTime, evitando que a modificação afete a variável original.
+            (clone $dataInicio)->modify('+1 day'),
             '2027-12-31'
         );
 

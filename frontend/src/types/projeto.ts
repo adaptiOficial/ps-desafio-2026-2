@@ -7,4 +7,9 @@ export type projetoType = {
   data_fim: string
   created_at?: string
   updated_at?: string
+  membros?: {
+    id: string
+    nome: string
+    email: string
+  }[]
 }
