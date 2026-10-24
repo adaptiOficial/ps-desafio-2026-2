@@ -53,6 +53,7 @@ export default function FormFieldsMember({
             id="email"
             type="email"
             placeholder="Insira o e-mail"
+            defaultValue={member?.email}
             disabled={pending}
             readOnly={readOnly}
             required

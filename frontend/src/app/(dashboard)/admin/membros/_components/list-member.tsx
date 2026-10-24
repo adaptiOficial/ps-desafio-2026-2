@@ -11,7 +11,7 @@ import {
 } from '@/components/dashboard/table'
 import { api } from '@/services/api'
 import { membroType } from '@/types/member'
-import { LuInfo, LuPen, LuCirclePlus, LuTrash } from 'react-icons/lu'
+import { LuInfo, LuPen, LuPlusCircle, LuTrash } from 'react-icons/lu'
 import { DialogUpdateMember } from './dialog-update-member'
 import { DialogMemberDelete } from './dialog-delete-member'
 import { DialogInformationMember } from './dialog-information-member'
@@ -33,7 +33,7 @@ export default async function ListMembers() {
       <DashboardContainer className="flex h-min justify-between space-x-0 gap-y-2.5 max-sm:flex-col">
         <DialogCreateMember>
           <Button size="sm">
-            <LuCirclePlus />
+            <LuPlusCircle />
             Novo membro
           </Button>
         </DialogCreateMember>

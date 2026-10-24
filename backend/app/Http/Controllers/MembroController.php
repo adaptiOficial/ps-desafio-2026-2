@@ -41,6 +41,7 @@ class MembroController extends Controller
             $validatedData['image'] = url('storage/' . $path);
         }
 
+        $validatedData['senha'] = bcrypt($validatedData['senha']);
         $membro = $this->membro->create($validatedData);
         return response()->json($membro, Response::HTTP_CREATED);
     }
@@ -75,6 +76,11 @@ class MembroController extends Controller
             $validatedData['image'] = url('storage/' . $path);
         }
 
+        if (!empty($validatedData['senha'])) {
+            $validatedData['senha'] = bcrypt($validatedData['senha']);
+        } else {
+         unset($validatedData['senha']);
+        }   
         $membro->update($validatedData);
         return response()->json($membro, Response::HTTP_OK);
     }

@@ -24,6 +24,9 @@ export default function FormFieldsProjeto({
     <>
       <FormFieldsGroup>
         {projeto && <Input defaultValue={projeto.id} type="text" name="id" hidden />}
+
+        {projeto && <input type="hidden" name="_method" value="PUT" />}
+        
         <FormField>
           <Label htmlFor="nome">Nome</Label>
           <Input
@@ -78,6 +81,20 @@ export default function FormFieldsProjeto({
             disabled={pending}
             readOnly={readOnly}
           />
+        </FormField>
+        <FormField>
+          <Label htmlFor="status">Status</Label>
+          <select
+            name="status"
+            id="status"
+            defaultValue={projeto?.status || 'Ativo'}
+            disabled={pending || readOnly}
+            className="flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="Ativo">Ativo</option>
+            <option value="Concluido">Concluído</option>
+            <option value="Pausado">Pausado</option>
+          </select>
         </FormField>
       </FormFieldsGroup>
       <DialogFooter className={cn({ hidden: readOnly })}>

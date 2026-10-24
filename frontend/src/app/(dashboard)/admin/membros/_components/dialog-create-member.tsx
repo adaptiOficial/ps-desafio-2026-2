@@ -27,14 +27,17 @@ export function DialogCreateMember({ children }: DialogCreateMemberProps) {
 
     const { error } = await JSON.parse(await createMember(newForm))
 
+    console.log("ERRO DO BACKEND:", error);
+
     if (error) {
-      toast({
-        title: 'Não foi possível criar o membro!',
-      })
+      let mensagemErro = 'Não foi possível cadastrar o membro!'
+
+      if(error.status == 422 && error.errors) {
+        mensagemErro = Object.values(error.errors)[0] as string;
+      }
+      toast({ title: mensagemErro})
     } else {
-      toast({
-        title: 'Membro criado com sucesso!',
-      })
+      toast({ title: 'Membro cadastrado com sucesso!' })
       setOpen(false)
     }
   }

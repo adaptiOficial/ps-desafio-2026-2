@@ -12,7 +12,7 @@ class UpdateMembroRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,8 @@ class UpdateMembroRequest extends FormRequest
     {
         return [
             'nome' => ['sometimes'],
-            'email' => ['sometimes', 'string', 'max:255'],
-            'senha' => ['sometimes', 'string', 'max:255',
+            'email' => ['sometimes', 'email','string', 'max:255'],
+            'senha' => ['nullable','sometimes', 'string', 'max:255',
                     Password::min(8)
                     ->letters()
                     ->mixedCase()

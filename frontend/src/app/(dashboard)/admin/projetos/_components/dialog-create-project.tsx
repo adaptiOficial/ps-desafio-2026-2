@@ -26,8 +26,15 @@ export function DialogCreateProjeto({ children }: DialogCreateProjetoProps) {
     const newForm = await filterFormData(form)
     const { error } = await JSON.parse(await createProjeto(newForm))
 
+    console.log("ERRO DO BACKEND:", error);
+
     if (error) {
-      toast({ title: 'Não foi possível criar o projeto!' })
+      let mensagemErro = 'Não foi possível criar o projeto!'
+
+      if(error.status == 422 && error.errors) {
+        mensagemErro = Object.values(error.errors)[0] as string;
+      }
+      toast({ title: mensagemErro})
     } else {
       toast({ title: 'Projeto criado com sucesso!' })
       setOpen(false)
