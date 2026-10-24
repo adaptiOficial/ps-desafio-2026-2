@@ -1,4 +1,3 @@
-# Adapti Project Template
 # Sistema de Gestão para Empresas Juniores (MEJ)
 
 Desafio Técnico Adapti (PS 2026.2). Backend em **Laravel**, frontend em **Next.js** com **Tailwind CSS**.
@@ -80,7 +79,7 @@ Os **dois servidores precisam estar ligados** ao mesmo tempo.
 
 ### Tabelas e relacionamentos
 
-- `projeto_membro` (tabela principal): relação N:N entre projetos e membros, com chave primária composta `(projeto_id, membro_id)`, que impede o mesmo membro duas vezes no mesmo projeto.
+- `projeto_membro` (tabela pivô): relação N:N entre projetos e membros, com chave primária composta `(projeto_id, membro_id)`, que impede o mesmo membro duas vezes no mesmo projeto.
 - `tarefas`: cada tarefa pertence a **um projeto** e a **um membro** (`membro_id` obrigatório). Relações 1:N.
 - Eloquent:
   - `Projeto::membros()` e `Membro::projetos()` (`belongsToMany`)
@@ -132,7 +131,7 @@ Erros de validação (422): `{ "message": "...", "errors": { "campo": ["..."] } 
 | Login | `POST /login` com `{ "email", "password" }` → 200 com dados do usuário e `token` |
 | Membros | `GET /membros`, `POST /membros`, `PUT /membros/{id}`, `DELETE /membros/{id}` |
 | Projetos | `GET /projetos`, `POST /projetos`, `PUT /projetos/{id}`, `DELETE /projetos/{id}` |
-| Alocação | `POST /projetos/{projeto}/membros` com `{ "membro_id": "uuid" }` |
+| Alocação | `POST /projetos/{projeto}/membros` com `{ "membro_id": "uuid" }` e `DELETE /projetos/{projetoId}/membros/{membroId}` (remove a alocação) |
 | Tarefas | `GET /tarefas` (filtro `?projeto_id=`), `POST /tarefas`, `GET`, `PUT` e `DELETE /tarefas/{id}` |
 
 ### Campos
@@ -168,3 +167,5 @@ Prints das telas e dos alertas de erro: https://drive.google.com/drive/folders/1
 **`react-icons` atualizado para 5.7.0:** a versão antiga não tinha ícones usados no menu e na tela de projetos, e a página quebrava. Arquivo: `frontend/package.json`.
 
 **Tarefa só para membro alocado no projeto.** Arquivo: `TarefaController` (`verificarAlocacao`). Para ver: tela de Tarefas, "Nova tarefa", escolha um membro que não está no projeto.
+
+**Requests de Tarefa com validação e mensagens em português** (`StoreTarefaRequest` e `UpdateTarefaRequest`): o título é obrigatório, o status só aceita `pendente`, `em_andamento` ou `concluida`, e `data_fim` não pode ser anterior a `data_inicio`. Para ver: `POST /api/tarefas` sem título, ou `PUT /api/tarefas/{id}` com uma `data_fim` antiga (os prints estão na pasta do Drive).
